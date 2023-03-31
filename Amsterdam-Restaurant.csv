@@ -1,4 +1,4 @@
-address,Name,id,lat,lng,location,subCategory,details,reviews
+address,name,id,lat,lng,location,subCategory,details,reviews
 ,Yellow Bone Crib Yani,26351,52.377218,4.805909,Amsterdam,African Restaurant,http://tour-pedia.org/api/getPlaceDetails?id=26351,http://tour-pedia.org/api/getReviewsByPlaceId?placeId=26351
 ,poidude's,26258,52.350923,4.784998,Amsterdam,African Restaurant,http://tour-pedia.org/api/getPlaceDetails?id=26258,http://tour-pedia.org/api/getReviewsByPlaceId?placeId=26258
 ,Elza's Huisje,28312,52.38777923584,4.9888777732849,Amsterdam,African Restaurant,http://tour-pedia.org/api/getPlaceDetails?id=28312,http://tour-pedia.org/api/getReviewsByPlaceId?placeId=28312

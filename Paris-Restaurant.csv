@@ -1,4 +1,4 @@
-address,Name,id,lat,lng,location,subCategory,details,reviews
+address,name,id,lat,lng,location,subCategory,details,reviews
 6 rue Vaucouleurs,Pitch me,91571,48.868409158533,2.3780652513118,Paris,African Restaurant,http://tour-pedia.org/api/getPlaceDetails?id=91571,http://tour-pedia.org/api/getReviewsByPlaceId?placeId=91571
 22 rue du Château Landon,Massawa,91077,48.881605876984,2.3629219532838,Paris,African Restaurant,http://tour-pedia.org/api/getPlaceDetails?id=91077,http://tour-pedia.org/api/getReviewsByPlaceId?placeId=91077
 ,QG Burger,91209,48.852615653355,2.2635333494212,Paris,American Restaurant,http://tour-pedia.org/api/getPlaceDetails?id=91209,http://tour-pedia.org/api/getReviewsByPlaceId?placeId=91209

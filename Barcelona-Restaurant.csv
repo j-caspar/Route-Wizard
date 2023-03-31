@@ -1,4 +1,4 @@
-address,name,id,lat,lng,location,subCategory,Reviews
+address,name,id,lat,lng,location,subCategory,reviews
 C.C. Las Arenas,Happy Rock,141203,41.37612939954,2.1493768697986,Barcelona,American Restaurant,http://tour-pedia.org/api/getPlaceDetails?id=141203
 Carrer de Santa Fe de Nou Mexic s/n,Frankfurts de Cine,130108,41.393729,2.135889,Barcelona,American Restaurant,http://tour-pedia.org/api/getPlaceDetails?id=130108
 Mandri 25,LIFE,154021,41.402770894524,2.1339548951384,Barcelona,American Restaurant,http://tour-pedia.org/api/getPlaceDetails?id=154021
