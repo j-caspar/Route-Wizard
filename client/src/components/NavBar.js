@@ -22,6 +22,7 @@ const NavText = ({ href, text, isMain }) => {
         style={{
           color: 'inherit',
           textDecoration: 'none',
+          padding: 26
         }}
       >
         {text}
@@ -39,11 +40,11 @@ export default function NavBar() {
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           <NavText href='/' text='Travel Match' isMain />
-          <NavText href='/albums' text='ALBUMS' />
-          <NavText href='/songs' text='SONGS' />
-          <input id="searchbar" onkeyup="search_animal()" type="text"
-        name="search" placeholder="Search specifically for accommodations, restaurants, and activities.."></input>
-        </Toolbar>
+          <NavText href='/albums' text='ATTRACTIONS' />
+          <NavText href='/songs' text='RESTAURANTS' />
+          <NavText href='/songs' text='BUILD AN ITINERARY' />
+          <NavText href='/songs' text='ACCOMODATIONS' />
+         </Toolbar>
       </Container>
     </AppBar>
   );

@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import { Button, Checkbox, Container, FormControlLabel, Grid, Link, Slider, TextField } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
-import SongCard from '../components/SongCard';
-import { formatDuration } from '../helpers/formatter';
 const config = require('../config.json');
 
 export default function SongsPage() {
@@ -127,4 +125,171 @@ export default function SongsPage() {
       />
     </Container>
   );
+
+  const searchButton = document.getElementById("searchButton");
+const searchedNews = document.getElementById("searchedNews");
+const categoryOfNews = document.getElementById("categoryOfNews");
+const detailsForNews = document.getElementById("detailsForNews");
+var newsDataArr = [];
+
+
+searchButton.addEventListener("click", function() {
+    categoryOfNews.innerHTML="<h4>Search : "+searchedNews.value+"</h4>";
+    getSearchResults();
+});
+
+const getSearchResults = async () => {
+
+    if(searchedNews.value == null) {
+        console.log("Nothing searched for");
+        return;
+    }
+
+    $(document).ready(function() {
+        $.get('/getSearchedNews?searchedNews='+searchedNews.value, function (data) {
+            newsDataArr = [];
+            newsDataArr = JSON.parse(JSON.stringify(data.results));
+            showSearchedNews();
+        });
+    });
+}
+
+// window.onload = function() {
+//     console.log("made it to ejs file");
+//     categoryOfNews.innerHTML="<h4>All News</h4>";
+//     getFrontPage();
+// };
+
+$(document).ready(function() {
+    $.get('/getAllNews', function (data) {
+        categoryOfNews.innerHTML="<h4>All News</h4>";
+        newsDataArr = JSON.parse(JSON.stringify(data.data));
+        showNews();
+    });
+});
+
+function showNews() {
+    detailsForNews.innerHTML = "";
+
+    if (newsDataArr.length == 0) {
+        detailsForNews.innerHTML = "<h5>No news articles have been found</h5>"
+        return;
+    }
+    console.log("Below is all the data");
+    console.log(newsDataArr);
+    console.log(newsDataArr.length);
+    newsDataArr.forEach(articles => {
+        console.log("We are in for each loop");
+        console.log(articles);
+        console.log(articles.authors.S);
+        var column = document.createElement('div');
+        column.className="col-sm-12 col-md-4 col-lg-3 p-2 card";
+
+        var article = document.createElement('div');
+        article.className="p-2";
+
+        var img = document.createElement('img');
+        img.setAttribute("height", "matchparent");
+        img.setAttribute("width", "100%");
+        img.src; //INSERT IMG FOR EACH ARTICLE HERE
+
+        var articleBody = document.createElement('div');
+        
+        var articleHeading = document.createElement('h5');
+        articleHeading.className="articleHeading";
+        articleHeading.innerHTML=articles.headline.S;
+
+        var date = document.createElement('h6');
+        date.className="text-dark";
+        date.innerHTML=articles.date.S;
+
+        var description = document.createElement('p');
+        description.className="text-secondary";
+        description.innerHTML=articles.short_description.S;
+
+        var url = document.createElement('a');
+        url.className="btn btn-dark";
+        url.setAttribute("target", "_blank");
+        url.href=articles.link.S;
+        url.innerHTML="Continue Reading";
+
+
+        articleBody.appendChild(articleHeading);
+        articleBody.appendChild(date);
+        articleBody.appendChild(description);
+        articleBody.appendChild(url);
+
+        article.appendChild(img);
+        article.appendChild(articleBody);
+
+        column.appendChild(article);
+
+        detailsForNews.appendChild(column);
+    });
+
+    
+}
+
+
+function showSearchedNews() {
+    detailsForNews.innerHTML = "";
+
+    if (newsDataArr.length == 0) {
+        detailsForNews.innerHTML = "<h5>No news articles have been found</h5>"
+        return;
+    }
+    console.log("Below is all the data");
+    console.log(newsDataArr);
+    console.log(newsDataArr.length);
+    newsDataArr.forEach(articles => {
+        console.log("We are in for each loop");
+        console.log(articles);
+        console.log(articles.authors);
+        var column = document.createElement('div');
+        column.className="col-sm-12 col-md-4 col-lg-3 p-2 card";
+
+        var article = document.createElement('div');
+        article.className="p-2";
+
+        var img = document.createElement('img');
+        img.setAttribute("height", "matchparent");
+        img.setAttribute("width", "100%");
+        img.src; //INSERT IMG FOR EACH ARTICLE HERE
+
+        var articleBody = document.createElement('div');
+        
+        var articleHeading = document.createElement('h5');
+        articleHeading.className="articleHeading";
+        articleHeading.innerHTML=articles.headline;
+
+        var date = document.createElement('h6');
+        date.className="text-dark";
+        date.innerHTML=articles.date;
+
+        var description = document.createElement('p');
+        description.className="text-secondary";
+        description.innerHTML=articles.short_description;
+
+        var url = document.createElement('a');
+        url.className="btn btn-dark";
+        url.setAttribute("target", "_blank");
+        url.href=articles.link;
+        url.innerHTML="Continue Reading";
+
+
+        articleBody.appendChild(articleHeading);
+        articleBody.appendChild(date);
+        articleBody.appendChild(description);
+        articleBody.appendChild(url);
+
+        article.appendChild(img);
+        article.appendChild(articleBody);
+
+        column.appendChild(article);
+
+        detailsForNews.appendChild(column);
+    });
+
+    
+}
 }
