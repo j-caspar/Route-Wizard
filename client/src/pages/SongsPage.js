@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Button, Checkbox, Container, FormControlLabel, Grid, Link, Slider, TextField } from '@mui/material';
+import { Box, Button, Checkbox, Container, FormControlLabel, Grid, Link, Slider, TextField } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import './pages.css';
 
 import SongCard from '../components/SongCard';
 import { formatDuration } from '../helpers/formatter';
@@ -61,7 +62,12 @@ export default function SongsPage() {
     { field: 'valence', headerName: 'Valence' },
     { field: 'tempo', headerName: 'Tempo' },
     { field: 'key_mode', headerName: 'Key' },
-    { field: 'explicit', headerName: 'Explicit' },
+    { field: 'amsterdam', headerName: 'Amsterdam' },
+    { field: 'barcelona', headerName: 'Barcelona' },
+    { field: 'berlin', headerName: 'Berlin' },
+    { field: 'london', headerName: 'London' },
+    { field: 'paris', headerName: 'Paris' },
+    { field: 'rome', headerName: 'Rome' }
   ]
 
   // This component makes uses of the Grid component from MUI (https://mui.com/material-ui/react-grid/).
@@ -74,17 +80,52 @@ export default function SongsPage() {
   return (
     <Container>
       {selectedSongId && <SongCard songId={selectedSongId} handleClose={() => setSelectedSongId(null)} />}
-      <h2>Search Songs</h2>
+      <h2>Build an itinerary</h2>
+      <h4>Dates</h4>
       <Grid container spacing={6}>
+      
         <Grid item xs={8}>
-          <TextField label='Title' value={title} onChange={(e) => setTitle(e.target.value)} style={{ width: "100%" }}/>
+          <TextField label='Start' value={title} onChange={(e) => setTitle(e.target.value)} style={{ width: 1000, height: 100 }}/>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={8}>
+          <TextField label='End' value={title} onChange={(e) => setTitle(e.target.value)} style={{ width: 1000, height: 100}}/>
+        </Grid>
+       
+        <Grid item xs={6}>
+ <div className='new-line'><h4>City(ies)</h4></div>
+      
+      <div style={{
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+}}>
           <FormControlLabel
-            label='Explicit'
+            label='Amsterdam'
             control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
           />
+          <FormControlLabel
+            label='Barcelona'
+            control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
+          />
+          <FormControlLabel
+            label='Berlin'
+            control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
+          />
+          <FormControlLabel
+            label='London'
+            control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
+          />
+          <FormControlLabel
+            label='Paris'
+            control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
+          />
+          <FormControlLabel
+            label='Rome'
+            control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
+          />
+          </div>
         </Grid>
+        
         <Grid item xs={6}>
           <p>Duration</p>
           <Slider
