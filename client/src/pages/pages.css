@@ -1,0 +1,30 @@
+.centered-h2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 10vh;
+    color:cornsilk;
+  }
+
+  .left-panel {
+    display: inline-block;
+    background-color: lightyellow;
+    width: 50%;
+}
+.middle-panel {
+    display: inline-block;
+    background-color: lightblue;
+    width: 30%;
+}
+.right-panel {
+    display: inline-block;
+    background-color: lightgreen;
+    width: 20%
+}
+
+.build {
+    display: inline-block;
+    background-color: lightgreen;
+    width: 100%
+  }
+  
