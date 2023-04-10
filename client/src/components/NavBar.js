@@ -1,5 +1,6 @@
 import { AppBar, Container, Toolbar, Typography } from '@mui/material'
 import { NavLink } from 'react-router-dom';
+import '../pages/pages.css';
 
 // The hyperlinks in the NavBar contain a lot of repeated formatting code so a
 // helper component NavText local to the file is defined to prevent repeated code.
@@ -36,9 +37,9 @@ export default function NavBar() {
     <AppBar position='static'>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
-          <NavText href='/' text='SWIFTIFY' isMain />
-          <NavText href='/albums' text='ALBUMS' />
-          <NavText href='/songs' text='SONGS' />
+          <NavText class='navSpace' href='/' text='HOME' isMain />
+          <NavText class='navSpace' href='/itinerary' text='BUILD AN ITINERARY' />
+          <NavText class='navSpace' href='/restaurants' text='RESTAURANTS' />
         </Toolbar>
       </Container>
     </AppBar>

@@ -92,7 +92,7 @@ export default function SongsPage() {
         </Grid>
        
         <Grid item xs={6}>
- <div className='new-line'><h4>City(ies)</h4></div>
+ <h4>City(ies)</h4>
       
       <div style={{
     display: 'flex',
@@ -125,69 +125,48 @@ export default function SongsPage() {
           />
           </div>
         </Grid>
+
+        <Grid item xs={8}>
+
+<h4>I don't like:</h4>
+      
+   
+          <FormControlLabel
+            label='Thing #1'
+            control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
+          />
+          <FormControlLabel
+            label='Thing #2'
+            control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
+          />
+          <FormControlLabel
+            label='Thing #3'
+            control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
+          />
+          <FormControlLabel
+            label='Thing #4'
+            control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
+          />
+          <FormControlLabel
+            label='Thing #5'
+            control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
+          />
+          <FormControlLabel
+            label='Thing #6'
+            control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
+          />
+        </Grid>
+
+        <Grid item xs={8}>
+
+<h4>I really want to go to: </h4>
+      
+   
+        </Grid>
         
-        <Grid item xs={6}>
-          <p>Duration</p>
-          <Slider
-            value={duration}
-            min={60}
-            max={660}
-            step={10}
-            onChange={(e, newValue) => setDuration(newValue)}
-            valueLabelDisplay='auto'
-            valueLabelFormat={value => <div>{formatDuration(value)}</div>}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <p>Plays (millions)</p>
-          <Slider
-            value={plays}
-            min={0}
-            max={1100000000}
-            step={10000000}
-            onChange={(e, newValue) => setPlays(newValue)}
-            valueLabelDisplay='auto'
-            valueLabelFormat={value => <div>{value / 1000000}</div>}
-          />
-        </Grid>
-        {/* TODO (TASK 24): add sliders for danceability, energy, and valence (they should be all in the same row of the Grid) */}
-        {/* Hint: consider what value xs should be to make them fit on the same row. Set max, min, and a reasonable step. Is valueLabelFormat is necessary? */}
-        <Grid item xs={4}>
-          <p>Danceability</p>
-          <Slider
-            value={danceability}
-            min={0}
-            max={1}
-            step={0.1}
-            onChange={(e, newValue) => setDanceability(newValue)}
-            valueLabelDisplay='auto'
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <p>Energy</p>
-          <Slider
-            value={energy}
-            min={0}
-            max={1}
-            step={0.1}
-            onChange={(e, newValue) => setEnergy(newValue)}
-            valueLabelDisplay='auto'
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <p>Valence</p>
-          <Slider
-            value={valence}
-            min={0}
-            max={1}
-            step={0.1}
-            onChange={(e, newValue) => setValence(newValue)}
-            valueLabelDisplay='auto'
-          />
-        </Grid>
       </Grid>
-      <Button onClick={() => search() } style={{ left: '50%', transform: 'translateX(-50%)' }}>
-        Search
+      <Button onClick={() => search() } style={{color: 'white', backgroundColor: 'gray', fontSize: '3rem', left: '50%', transform: 'translateX(-50%)' }}>
+        BUILD
       </Button>
       <h2>Results</h2>
       {/* Notice how similar the DataGrid component is to our LazyTable! What are the differences? */}

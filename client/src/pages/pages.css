@@ -31,3 +31,25 @@
 .new-line {
     white-space: pre-line;
   }
+
+  .centered-h2-rest {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 10vh;
+    color:black;
+    font-size:xx-large;
+  }
+
+  .dropdown {
+    width: 270px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: large;
+  }
+
+  .navSpace {
+    padding: 150px;
+  }
