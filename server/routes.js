@@ -63,7 +63,7 @@ const best_airbnb = async function(req, res) {
  ******************/
 
 // Route 1: GET /author/:type
-const author = async function(req, res) {
+const bestAirbnbs = async function(req, res) {
   // TODO (TASK 1): replace the values of name and pennKey with your own
   const name = 'Semma Alfatlawi';
   const pennKey = 'semmas';
