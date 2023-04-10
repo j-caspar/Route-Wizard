@@ -54,6 +54,7 @@ const best_airbnb = async function(req, res) {
     res.json(data);
   }
   });
+}
 
 
 
