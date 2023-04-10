@@ -95,6 +95,7 @@ export default function SongsPage() {
  <h4>City(ies)</h4>
       
       <div style={{
+        marginLeft: 70,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',

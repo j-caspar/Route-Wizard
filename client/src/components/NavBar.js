@@ -10,7 +10,7 @@ const NavText = ({ href, text, isMain }) => {
       variant={isMain ? 'h5' : 'h7'}
       noWrap
       style={{
-        marginRight: '30px',
+        marginRight: '80px',
         fontFamily: 'monospace',
         fontWeight: 700,
         letterSpacing: '.3rem',
@@ -34,12 +34,12 @@ const NavText = ({ href, text, isMain }) => {
 // props to how it changes the look of the component.
 export default function NavBar() {
   return (
-    <AppBar position='static'>
+    <AppBar style={{backgroundColor: 'gray', color: 'white'}} position='static'>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
-          <NavText class='navSpace' href='/' text='HOME' isMain />
-          <NavText class='navSpace' href='/itinerary' text='BUILD AN ITINERARY' />
-          <NavText class='navSpace' href='/restaurants' text='RESTAURANTS' />
+          <NavText href='/' text='HOME' isMain />
+          <NavText href='/itinerary' text='BUILD AN ITINERARY' />
+          <NavText href='/restaurants' text='RESTAURANTS' />
         </Toolbar>
       </Container>
     </AppBar>
