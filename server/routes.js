@@ -13,6 +13,52 @@ const connection = mysql.createConnection({
 connection.connect((err) => err && console.log(err));
 
 /******************
+ * FINAL PROJECT ROUTES *
+ ******************/
+
+// Route 1: GET /best_airbnb
+const best_airbnb = async function(req, res) {
+
+  const page = req.query.page;
+  const pageSize = 10;
+
+  connection.query(`WITH top_accommodations AS (
+    SELECT name, lat, lng, review_score
+    FROM accommodations
+    ORDER BY review_score DESC
+    LIMIT 500
+ ),
+ nearby_restaurants AS (
+    SELECT a1.name AS ac_name, COUNT(DISTINCT a3.name) AS num_restaurants
+    FROM top_accommodations a1, restaurants a3
+    WHERE ABS(a1.lat - a3.lat) < .01 AND ABS(a1.lng - a3.lng) < .01
+    GROUP BY a1.name
+ ),
+ nearby_attractions AS (
+    SELECT a1.name AS ac_name, COUNT(DISTINCT a2.name) AS num_attractions
+    FROM top_accommodations a1, attractions a2
+    WHERE ABS(a1.lat - a2.lat) < .01 AND ABS(a1.lng - a2.lng) < .01
+    GROUP BY a1.name
+ )
+ SELECT Ac.name, Ac.picture_url, Ac.price, Ac.listing_url, Ac.review_score, Ac.lat, Ac.lng, num_restaurants AS nearby_restaurants, num_attractions as nearby_attractions
+ FROM nearby_restaurants R JOIN nearby_attractions A ON R.ac_name = A.ac_name JOIN accommodations Ac ON Ac.name = R.ac_name
+ ORDER BY Ac.review_score DESC, (num_restaurants + num_attractions) DESC; 
+  `, (err, data) => {
+  if (err || data.length === 0) {
+    // if there is an error for some reason, or if the query is empty (this should not be possible)
+    // print the error message and return an empty object instead
+    console.log(err);
+    res.json([]);
+  } else {
+    console.log(data);
+    res.json(data);
+  }
+  });
+
+
+
+
+/******************
  * WARM UP ROUTES *
  ******************/
 
