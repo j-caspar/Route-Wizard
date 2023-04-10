@@ -17,7 +17,7 @@ connection.connect((err) => err && console.log(err));
  ******************/
 
 // Route 1: GET /author/:type
-const author = async function(req, res) {
+const bestAirbnbs = async function(req, res) {
   // TODO (TASK 1): replace the values of name and pennKey with your own
   const name = 'Semma Alfatlawi';
   const pennKey = 'semmas';
