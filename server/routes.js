@@ -16,24 +16,41 @@ connection.connect((err) => err && console.log(err));
  * WARM UP ROUTES *
  ******************/
 
-// Route 1: GET /author/:type
+// Route 1: GET /best_airbnb
 const bestAirbnbs = async function(req, res) {
-  // TODO (TASK 1): replace the values of name and pennKey with your own
-  const name = 'Semma Alfatlawi';
-  const pennKey = 'semmas';
-
-  // checks the value of type the request parameters
-  // note that parameters are required and are specified in server.js in the endpoint by a colon (e.g. /author/:type)
-  if (req.params.type === 'name') {
-    // res.send returns data back to the requester via an HTTP response
-    res.send(`Created by ${name}`);
-  } else if (req.params.type === 'pennkey') {
-    // TODO (TASK 2): edit the else if condition to check if the request parameter is 'pennkey' and if so, send back response 'Created by [pennkey]'
-    res.send(`Created by ${pennKey}`);
-  } else {
-    // we can also send back an HTTP status code to indicate an improper request
-    res.status(400).send(`'${req.params.type}' is not a valid author type. Valid types are 'name' and 'pennkey'.`);
-  }
+  connection.query(`
+      WITH top_accommodations AS (
+        SELECT name, lat, lng, review_score
+        FROM accommodations
+        ORDER BY review_score DESC
+        LIMIT 500
+    ),
+    nearby_restaurants AS (
+        SELECT a1.name AS ac_name, COUNT(DISTINCT a3.name) AS num_restaurants
+        FROM top_accommodations a1, restaurants a3
+        WHERE ABS(a1.lat - a3.lat) < .01 AND ABS(a1.lng - a3.lng) < .01
+        GROUP BY a1.name
+    ),
+    nearby_attractions AS (
+        SELECT a1.name AS ac_name, COUNT(DISTINCT a2.name) AS num_attractions
+        FROM top_accommodations a1, attractions a2
+        WHERE ABS(a1.lat - a2.lat) < .01 AND ABS(a1.lng - a2.lng) < .01
+        GROUP BY a1.name
+    )
+    SELECT Ac.name, Ac.picture_url, Ac.price, Ac.listing_url, Ac.review_score, Ac.lat, Ac.lng, num_restaurants AS nearby_restaurants, num_attractions as nearby_attractions
+    FROM nearby_restaurants R JOIN nearby_attractions A ON R.ac_name = A.ac_name JOIN accommodations Ac ON Ac.name = R.ac_name
+    ORDER BY Ac.review_score DESC, (num_restaurants + num_attractions) DESC;
+  `, (err, data) => {
+    if (err || data.length === 0) {
+      // if there is an error for some reason, or if the query is empty (this should not be possible)
+      // print the error message and return an empty object instead
+      console.log(err);
+      res.json([]);
+    } else {
+      console.log(data[0]);
+      res.json(data);
+    }
+  });
 }
 
 // Route 2: GET /random
