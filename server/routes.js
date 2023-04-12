@@ -166,6 +166,7 @@ const attractions = async function (req, res) {
       res.json(data);
     }
   });
+}
 
   // GET /random_attr
   const random_attr = async function (req, res) {
