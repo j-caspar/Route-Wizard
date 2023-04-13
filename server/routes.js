@@ -140,6 +140,28 @@ const vegetarian = async function (req, res) {
   });
 }
 
+// GET /nearby_att
+const nearby_att = async function (req, res) {
+  const lng = req.query.lng ;
+  const lat = req.query.lat ;
+
+  connection.query(`
+  SELECT name, subcategory, picture_url, lat, lng
+  FROM Attractions A JOIN Subcategory S ON A.subcategory = S.name
+  WHERE location = user.city 
+  ORDER BY MIN(SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)))
+  LIMIT 10
+  `, (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json({});
+    } else {
+      console.log(data);
+      res.json(data);
+    }
+  });
+}
+
 
 // GET /attractions
 const attractions = async function (req, res) {
@@ -228,6 +250,118 @@ const attractions = async function (req, res) {
       }
     });
   }
+
+// GET /itinerary
+const itinerary = async function (req, res) {
+  const city = req.query.city || 'Amsterdam';
+  const days = req.query.days || 1;
+  const num_people = req.query.num_people || 1;
+  const min_price = req.query.min_price || 20;
+  const max_price = req.query.max_price || 1000;
+
+  connection.query(`
+
+  WITH hotel AS ( 
+    SELECT name, lat, lng, picture_url as image, 'airbnb' AS type
+    FROM accommodations
+    WHERE 2 >= min_nights AND ${min_price} <= price AND ${max_price} >= price AND ${num_people} < num_accommodates AND location = '${city}' AND review_score IS NOT NULL
+  GROUP BY name, picture_url, price, lat, lng, type
+  ORDER BY MAX(exp(SQRT((51.51348 - lat) * (51.51348 - lat) + (-0.13959 - lng) * (-0.13959 - lng))) * -3 * (LOG(num_reviews + 1) * 0.2) * (POWER(review_score, 3) / 150 )) LIMIT 1
+  ), rest AS (
+    SELECT R.name, lat, lng, NULL as image, 'restaurant' AS type
+    FROM restaurants R
+    WHERE location = '${city}' AND
+  SQRT((51.51348 - lat) * (51.51348 - lat) + (-0.13959 - lng) * (-0.13959 - lng)) * 111.139 < 2
+  ORDER BY RAND()
+  LIMIT 2*${days}
+  ), attrac AS (
+    SELECT A.name, lat, lng, S.image, 'attraction' AS type
+    FROM attractions A join subcategory S on A.subcategory=S.name
+    WHERE location = '${city}' AND
+  SQRT((51.51348 - lat) * (51.51348 - lat) + (-0.13959 - lng) * (-0.13959 - lng)) * 111.139 < 2
+  ORDER BY RAND()
+  LIMIT 2*${days}
+  ), nightlife AS (
+    SELECT B.name, lat, lng, S.image, B.subcategory AS type
+    FROM attractions B join subcategory S on B.subcategory = S.name
+    WHERE B.location = '${city}' AND ((S.adult_only = TRUE)
+   OR (
+                                             B.subcategory = 'Bowling Alley'
+                                             OR B.subcategory = 'Harbor / Marina'
+                                             OR B.subcategory = 'Movie Theater'
+                                             OR B.subcategory = 'Theater')) AND
+  SQRT((51.51348 - lat) * (51.51348 - lat) + (-0.13959 - lng) * (-0.13959 - lng)) * 111.139 < 2
+  ORDER BY RAND()
+  LIMIT ${days}
+  ), breakfast AS (
+     SELECT R.name, lat, lng, NULL as image, R.subcategory AS type
+    FROM restaurants R
+    WHERE location = '${city}' AND (R.subcategory = 'Bagel Shop' OR R.subcategory = 'Bakery'
+     OR R.subcategory = 'Breakfast Spot' OR R.subcategory = 'Donut Shop' OR R.subcategory = 'Coffee Shop')
+     ORDER BY RAND()
+     LIMIT ${days}
+  )
+  SELECT * FROM hotel
+  UNION
+  SELECT * FROM rest
+  UNION
+  SELECT * FROM attrac
+  UNION
+  SELECT * FROM nightlife
+  UNION
+  SELECT * FROM breakfast;
+  
+  `, (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json({});
+    } else {
+      console.log(data);
+      res.json(data);
+    }
+  });
+}
+
+// GET /travelwithfriend
+const friends = async function (req, res) {
+  const city = req.query.city || 'Amsterdam';
+  const A_num_people = req.query.A_num_people || 1;
+  const A_min_price = req.query.A_min_price || 20;
+  const A_max_price = req.query.A_max_price || 1000;
+  const A_min_nights = req.query.A_min_nights || 1;
+  const B_num_people = req.query.B_num_people || 1;
+  const B_min_price = req.query.B_min_price || 20;
+  const B_max_price = req.query.B_max_price || 1000;
+  const B_min_nights = req.query.B_min_nights || 1;
+
+
+  connection.query(`
+
+  SELECT A.name, A.picture_url, A.price, A.listing_url, A.review_score, A.num_reviews, A.neighborhood,
+    B.name, B.picture_url, B.price, B.listing_url, B.review_score, B.num_reviews, B.neighborhood,
+    SQRT((A.lat - B.lat) * (A.lat - B.lat) + (A.lng - B.lng) * (A.lng - B.lng)) * 111.139 AS Distance
+  FROM accommodations A JOIN accommodations B ON A.location = B.location
+  WHERE ${A_min_nights} >= A.min_nights AND ${B_min_nights} >= B.min_nights
+  AND ${A_min_price} <= A.price AND ${A_max_price} >= A.price AND ${B_min_price} <= B.price AND ${B_max_price} >= B.price
+  AND ${A_num_people} < A.num_accommodates AND ${B_num_people} < B.num_accommodates AND A.location = '${city}'  AND B.location = '${city}'
+  AND A.review_score IS NOT NULL AND B.review_score IS NOT NULL
+  AND A.name != B.name AND SQRT((A.lat - B.lat) * (A.lat - B.lat) + (A.lng - B.lng) * (A.lng - B.lng)) * 111.139 < 2
+  GROUP BY A.name, A.picture_url, A.price, A.listing_url, A.review_score, A.num_reviews, A.neighborhood,
+    B.name, B.picture_url, B.price, B.listing_url, B.review_score, B.num_reviews, B.neighborhood
+  ORDER BY MAX(exp(SQRT((A.lat - B.lat) * (A.lat - B.lat) + (A.lng - B.lng) * (A.lng - B.lng))) * -4 *
+        (LOG(((A.num_reviews + B.num_reviews) / 2) + 1) * 0.2) *
+        (POWER(((A.review_score + B.review_score) / 2), 3) / 150 )) LIMIT 10;
+  
+  `, (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json({});
+    } else {
+      console.log(data);
+      res.json(data);
+    }
+  });
+}
 
 
   /******************
