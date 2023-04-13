@@ -42,8 +42,7 @@ Max Lat - 42.1216
 Min Long - 12.25167
 Max Long - 12.79247
 
-
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLFHPV4MEIRROCButHu3Ls2-BPc2SEGJM"></script>
+(missing key)
 
 // map for airbnb selection
 <script>
