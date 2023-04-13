@@ -142,6 +142,7 @@ const vegetarian = async function (req, res) {
 
 // GET /nearby_att
 const nearby_att = async function (req, res) {
+  // assumes we pass in location (rather than/in addition to name)
   const lng = req.query.lng ;
   const lat = req.query.lat ;
 
@@ -164,6 +165,7 @@ const nearby_att = async function (req, res) {
 
 // GET /nearby_rest
 const nearby_rest = async function (req, res) {
+  // assumes we pass in location (rather than/in addition to name)
   const lng = req.query.lng;
   const lat = req.query.lat;
 
@@ -278,6 +280,55 @@ const attractions = async function (req, res) {
       }
     });
   }
+
+// GET /airbnbs
+const airbnbs = async function (req, res) {
+  const city = req.query.city || 'Amsterdam';
+  const nights = req.query.days || 1;
+  const num_people = req.query.num_people || 1;
+  const min_price = req.query.min_price || 20;
+  const max_price = req.query.max_price || 1000;
+  const lng = req.query.lng || 52.3676;
+  const lat = req.query.lat || 4.9041;
+
+  connection.query(`
+  SELECT name, picture_url, price, listing_url, review_score, lat, lng
+  FROM accommodations
+  WHERE ${nights} >= min_nights AND ${min_price} <= price AND ${max_price} >= price AND
+  ${num_people} < num_accommodates AND location = '${city}' AND review_score IS NOT NULL
+  GROUP BY name, picture_url, price, listing_url, review_score, lat, lng
+  ORDER BY MAX(exp(SQRT((${lat} - lat) * (${lat}  - lat) + (${lng} - lng) * (${lng} - lng))) * -3 * (LOG(num_reviews + 1) * 0.2) * (POWER(review_score, 3) / 150 ))
+  LIMIT 20  
+  `, (err, data) => {
+  if (err || data.length === 0) {
+    console.log(err);
+    res.json({});
+  } else {
+    console.log(data);
+    res.json(data);
+  }
+});
+}
+
+// GET /airbnbs/:bnb_name
+const bnb = async function (req, res) {
+  // assumes we have name and not location
+  const bnb_name = req.params.bnb_name;
+
+  connection.query(`
+  Select *
+  FROM accommodations
+  WHERE name = '${bnb_name}'
+  `, (err, data) => {
+  if (err || data.length === 0) {
+    console.log(err);
+    res.json({});
+  } else {
+    console.log(data);
+    res.json(data);
+  }
+});
+}
 
 // GET /itinerary
 const itinerary = async function (req, res) {
@@ -707,5 +758,7 @@ const friends = async function (req, res) {
     adult_only,
     itinerary,
     friends,
-    nearby_rest
+    nearby_rest,
+    airbnbs,
+    bnb
   }
