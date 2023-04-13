@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
-import SongCard from '../components/SongCard';
+import SongCard from '../components/AirbnbCard';
 import { formatDuration, formatReleaseDate } from '../helpers/formatter';
 const config = require('../config.json');
 
 export default function AlbumInfoPage() {
-  const { album_id } = useParams();
+  const { bnb_name } = useParams();
 
   const [airbnbData, setAirbnbData] = useState([{}]);
   const [songData, setSongData] = useState([{}]); // default should actually just be [], but empty object element added to avoid error in template code
@@ -17,18 +17,14 @@ export default function AlbumInfoPage() {
   const [selectedSongId, setSelectedSongId] = useState(null);
 
   useEffect(() => {
-    fetch(`http://${config.server_host}:${config.server_port}/album/${album_id}`)
+    fetch(`http://${config.server_host}:${config.server_port}/airbnb/${bnb_name}`)
       .then(res => res.json())
-      .then(resJson => setAlbumData(resJson));
-
-    fetch(`http://${config.server_host}:${config.server_port}/album_songs/${album_id}`)
-      .then(res => res.json())
-      .then(resJson => setSongData(resJson));
-  }, [album_id]);
+      .then(resJson => setAirbnbData(resJson));
+  }, []);
 
   return (
     <Container>
-      {selectedSongId && <SongCard songId={selectedSongId} handleClose={() => setSelectedSongId(null)} />}
+      {selectedAirbnbName && <SongCard airbnbName={selectedAirbnbName} handleClose={() => setSelectedAirbnbName(null)} />}
       <Stack direction='row' justify='center'>
         <img
           key={albumData.album_id}

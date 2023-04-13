@@ -3,7 +3,7 @@ import { Box, Button, Checkbox, Container, FormControlLabel, Grid, Link, Slider,
 import { DataGrid } from '@mui/x-data-grid';
 import './pages.css';
 
-import SongCard from '../components/SongCard';
+import AirbnbCard from '../components/AirbnbCard';
 import { formatDuration } from '../helpers/formatter';
 const config = require('../config.json');
 
@@ -11,6 +11,7 @@ export default function SongsPage() {
     const [pageSize, setPageSize] = useState(10);
     const [data, setData] = useState([]);
     const [selectedSongId, setSelectedSongId] = useState(null);
+    const [selectedAirbnbName, setSelectedAirbnbName] = useState(null);
 
     const [guests, setGuests] = useState([0, 99]);
     const [nights, setNights] = useState([0, 365]);
@@ -28,13 +29,13 @@ export default function SongsPage() {
     }
 
     useEffect(() => {
-        fetch(`http://${config.server_host}:${config.server_port}/search_songs`)
-            .then(res => res.json())
-            .then(resJson => {
-                const songsWithId = resJson.map((song) => ({ id: song.song_id, ...song }));
-                setData(songsWithId);
-            });
-    }, []);
+        fetch(`http://${config.server_host}:${config.server_port}/best_airbnb`)
+          .then(res => res.json())
+          .then(resJson => {
+            const airbnbsWithName = resJson.map((airbnb) => ({ id: airbnb.name, ...airbnb }));
+            setData(airbnbsWithName);
+          });
+      }, []);
 
     const search = () => {
         fetch(`http://${config.server_host}:${config.server_port}/airbnbs?guests=${guests}` +
@@ -61,24 +62,15 @@ export default function SongsPage() {
     // LazyTable component. The big difference is we provide all data to the DataGrid component
     // instead of loading only the data we need (which is necessary in order to be able to sort by column)
     const columns = [
-        {
-            field: 'title', headerName: 'Title', width: 300, renderCell: (params) => (
-                <Link onClick={() => setSelectedSongId(params.row.song_id)}>{params.value}</Link>
-            )
-        },
-        { field: 'duration', headerName: 'Duration' },
-        { field: 'plays', headerName: 'Plays' },
-        { field: 'danceability', headerName: 'Danceability' },
-        { field: 'energy', headerName: 'Energy' },
-        { field: 'valence', headerName: 'Valence' },
-        { field: 'tempo', headerName: 'Tempo' },
-        { field: 'key_mode', headerName: 'Key' },
-        { field: 'amsterdam', headerName: 'Amsterdam' },
-        { field: 'barcelona', headerName: 'Barcelona' },
-        { field: 'berlin', headerName: 'Berlin' },
-        { field: 'london', headerName: 'London' },
-        { field: 'paris', headerName: 'Paris' },
-        { field: 'rome', headerName: 'Rome' }
+        { field: 'name', headerName: 'Name', width: 300, renderCell: (params) => (
+            <Link onClick={() => setSelectedAirbnbName(params.row.id)}>{params.value}</Link>
+        ) },
+        { field: 'picture_url', headerName: 'Image' },
+        { field: 'price', headerName: 'Price/Night' },
+        { field: 'neighborhood', headerName: 'Neighborhood' },
+        { field: 'min_nights', headerName: 'Min # of nights' },
+        { field: 'num_accommodates', headerName: '# accomodates' },
+        { field: 'review_score', headerName: 'Rating' }
     ]
 
     // This component makes uses of the Grid component from MUI (https://mui.com/material-ui/react-grid/).
@@ -90,11 +82,11 @@ export default function SongsPage() {
     // will automatically lay out all the grid items into rows based on their xs values.
     return (
         <Container>
-            {selectedSongId && <SongCard songId={selectedSongId} handleClose={() => setSelectedSongId(null)} />}
+            {selectedAirbnbName && <AirbnbCard airbnbName={selectedAirbnbName} handleClose={() => setSelectedAirbnbName(null)} />}
             <h2 className='centered-h2-rest'>Airbnbs</h2>
             <div>
-                <h4 classname='coolContainerH4'>Number of Guests:</h4>
-                <Grid item xs={8} classname='coolContainerGrid'>
+                <h4 className='coolContainerH4'>Number of Guests:</h4>
+                <Grid item xs={8} className='coolContainerGrid'>
                     <TextField label='#' value={guests} onChange={(e) => setGuests(e.target.value)} style={{ width: 70, height: 100 }} />
                 </Grid>
             </div>
@@ -122,19 +114,19 @@ export default function SongsPage() {
                     </select>
                 </Grid>
             </Grid>
-            
+
             <h4>Price:</h4>
             <Grid container spacing={6}>
-            <Grid item xs={4}>
-                <Slider
-                    value={price}
-                    min={0}
-                    max={1000}
-                    step={10}
-                    onChange={(e, newValue) => setPrice(newValue)}
-                    valueLabelDisplay='auto'
-                />
-            </Grid>
+                <Grid item xs={4}>
+                    <Slider
+                        value={price}
+                        min={0}
+                        max={1000}
+                        step={10}
+                        onChange={(e, newValue) => setPrice(newValue)}
+                        valueLabelDisplay='auto'
+                    />
+                </Grid>
             </Grid>
 
 

@@ -3,7 +3,7 @@ import { Box, Button, Checkbox, Container, FormControlLabel, Grid, Link, Slider,
 import { DataGrid } from '@mui/x-data-grid';
 import './pages.css';
 
-import SongCard from '../components/SongCard';
+import SongCard from '../components/AirbnbCard';
 import { formatDuration } from '../helpers/formatter';
 const config = require('../config.json');
 
