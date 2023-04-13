@@ -162,6 +162,34 @@ const nearby_att = async function (req, res) {
   });
 }
 
+// GET /nearby_rest
+const nearby_rest = async function (req, res) {
+  const lng = req.query.lng;
+  const lat = req.query.lat;
+
+  connection.query(`
+  CREATE TABLE tempDist(name varchar(255), dist DECIMAL(28, 20));
+  INSERT INTO tempDist(name, dist)
+  SELECT name, (SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)))
+  FROM location
+  WHERE type = 'Restaurant';
+  
+  CREATE INDEX IX_closest ON tempDist(dist);
+  
+  SELECT R.name, R.subcategory, tempDist.dist
+  FROM restaurants R JOIN tempDist USE INDEX(IX_closest) ON R.name = tempDist.name
+  LIMIT 10;
+  
+  DROP TABLE IF EXISTS tempDist;`, (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json({});
+    } else {
+      console.log(data);
+      res.json(data);
+    }
+  });
+}
 
 // GET /attractions
 const attractions = async function (req, res) {
@@ -238,7 +266,7 @@ const attractions = async function (req, res) {
       SELECT A.name, A.subcategory, S.picture_url
       FROM attractions A JOIN subcategory S ON A.subcategory = S.name
       WHERE location = '${city}' AND
-      subcategory = ‘Bar’ OR subcategory = ‘Nightlife’ OR subcategory = ‘Cocktail Bar’ OR subcategory = ‘Pub’ OR subcategory = ‘Speakeasy’ OR subcategory = ‘Beer Garden’ OR subcategory = ‘Brewery’ OR subcategory = ‘Hookah Bar’ OR subcategory = ‘Gay Bar’ OR subcategory = ‘Lounge’ OR subcategory = ‘Casino’ OR subcategory = 'Comedy Club' OR subcategory = 'Dive Bar'
+      S.adult_only = true
       LIMIT 10
       `, (err, data) => {
       if (err || data.length === 0) {
@@ -258,39 +286,39 @@ const itinerary = async function (req, res) {
   const num_people = req.query.num_people || 1;
   const min_price = req.query.min_price || 20;
   const max_price = req.query.max_price || 1000;
+  const adult_only = req.query.adult_only || false;
+  const lng = req.query.lng || 52.3676;
+  const lat = req.query.lat || 4.9041;
 
   connection.query(`
 
   WITH hotel AS ( 
     SELECT name, lat, lng, picture_url as image, 'airbnb' AS type
     FROM accommodations
-    WHERE 2 >= min_nights AND ${min_price} <= price AND ${max_price} >= price AND ${num_people} < num_accommodates AND location = '${city}' AND review_score IS NOT NULL
+    WHERE  ${days} >= min_nights AND ${min_price} <= price AND ${max_price} >= price AND ${num_people} < num_accommodates AND location = '${city}' AND review_score IS NOT NULL
   GROUP BY name, picture_url, price, lat, lng, type
-  ORDER BY MAX(exp(SQRT((51.51348 - lat) * (51.51348 - lat) + (-0.13959 - lng) * (-0.13959 - lng))) * -3 * (LOG(num_reviews + 1) * 0.2) * (POWER(review_score, 3) / 150 )) LIMIT 1
+  ORDER BY MAX(exp(SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng))) * -3 * (LOG(num_reviews + 1) * 0.2) * (POWER(review_score, 3) / 150 )) LIMIT 1
   ), rest AS (
     SELECT R.name, lat, lng, NULL as image, 'restaurant' AS type
     FROM restaurants R
     WHERE location = '${city}' AND
-  SQRT((51.51348 - lat) * (51.51348 - lat) + (-0.13959 - lng) * (-0.13959 - lng)) * 111.139 < 2
+  SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)) * 111.139 < 2
   ORDER BY RAND()
   LIMIT 2*${days}
   ), attrac AS (
     SELECT A.name, lat, lng, S.image, 'attraction' AS type
     FROM attractions A join subcategory S on A.subcategory=S.name
     WHERE location = '${city}' AND
-  SQRT((51.51348 - lat) * (51.51348 - lat) + (-0.13959 - lng) * (-0.13959 - lng)) * 111.139 < 2
+  SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)) * 111.139 < 2
   ORDER BY RAND()
   LIMIT 2*${days}
   ), nightlife AS (
     SELECT B.name, lat, lng, S.image, B.subcategory AS type
     FROM attractions B join subcategory S on B.subcategory = S.name
-    WHERE B.location = '${city}' AND ((S.adult_only = TRUE)
-   OR (
-                                             B.subcategory = 'Bowling Alley'
-                                             OR B.subcategory = 'Harbor / Marina'
-                                             OR B.subcategory = 'Movie Theater'
-                                             OR B.subcategory = 'Theater')) AND
-  SQRT((51.51348 - lat) * (51.51348 - lat) + (-0.13959 - lng) * (-0.13959 - lng)) * 111.139 < 2
+    WHERE B.location = '${city}' AND S.adult_only = ${adult_only} AND 
+    (S.adult_only = true OR B.subcategory = 'Bowling Alley'
+    OR B.subcategory = 'Harbor / Marina' OR B.subcategory = 'Movie Theater' OR B.subcategory = 'Theater') AND
+  SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)) * 111.139 < 2
   ORDER BY RAND()
   LIMIT ${days}
   ), breakfast AS (
@@ -678,5 +706,6 @@ const friends = async function (req, res) {
     museums,
     adult_only,
     itinerary,
-    friends
+    friends,
+    nearby_rest
   }
