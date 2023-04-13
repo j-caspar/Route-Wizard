@@ -6,8 +6,10 @@ import { createTheme } from "@mui/material/styles";
 import NavBar from './components/NavBar';
 import HomePage from './pages/HomePage';
 import SongsPage from './pages/ItineraryPage';
-import AlbumInfoPage from './pages/AlbumInfoPage';
 import RestaurantsPage from './pages/RestaurantsPage';
+import AttractionsPage from './pages/AttractionsPage';
+import AirbnbPage from './pages/AirbnbPage';
+import AirbnbInfoPage from './pages/AirbnbInfoPage';
 
 // createTheme enables you to customize the look and feel of your app past the default
 // in this case, we only change the color scheme
@@ -30,9 +32,11 @@ export default function App() {
         <NavBar />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/albums/:album_id" element={<AlbumInfoPage />} />
+          <Route path="/airbnb/:bnb_name" element={<AirbnbInfoPage />} />
           <Route path="/itinerary" element={<SongsPage />} />
           <Route path="/restaurants" element={<RestaurantsPage />} />
+          <Route path="/attractions" element={<AttractionsPage />} />
+          <Route path="/airbnbs" element={<AirbnbPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

@@ -40,6 +40,8 @@ export default function NavBar() {
           <NavText href='/' text='HOME' isMain />
           <NavText href='/itinerary' text='BUILD AN ITINERARY' />
           <NavText href='/restaurants' text='RESTAURANTS' />
+          <NavText href='/attractions' text='ATTRACTIONS' />
+          <NavText href='/airbnbs' text='AIRBNBS' />
         </Toolbar>
       </Container>
     </AppBar>

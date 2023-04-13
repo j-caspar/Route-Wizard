@@ -39,9 +39,9 @@ export default function AlbumsPage() {
           className="left-panel"
           p={3}
           m={2}
-          style={{ width: 300, height: 100, background: 'paleturquoise', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
+          style={{width: 300, height: 100, background: 'paleturquoise', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
         >
-          Hotels
+          <h4><NavLink className='navColor' to={`/airbnbs`}>AIRBNBS</NavLink></h4>
          </Box>
       <Box
           className="middle-panel"
@@ -49,7 +49,7 @@ export default function AlbumsPage() {
           m={2}
           style={{ width: 300, height: 100, background: 'paleturquoise', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
         >
-          Attractions
+          <h4><NavLink className='navColor' to={`/attractions`}>ATTRACTIONS</NavLink></h4>
          </Box>
       <Box
           className="right-panel"
@@ -57,7 +57,7 @@ export default function AlbumsPage() {
           m={2}
           style={{ width: 300, height: 100, background: 'paleturquoise', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
         >
-          Restaurants
+          <h4><NavLink className='navColor' to={`/restaurants`}>RESTAURANTS</NavLink></h4>
          </Box>
          </div>
       <h2 className="centered-h2"> OR&nbsp; 
@@ -72,7 +72,7 @@ export default function AlbumsPage() {
           m={2}
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',width: 300, height: 100, background: 'paleturquoise', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
         >
-          Build an itinerary
+          <h4><NavLink className='navColor' to={`/itinerary`}>BUILD AN ITINERARY</NavLink></h4>
          </Box>
          </div>
     </Container>

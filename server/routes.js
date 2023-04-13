@@ -667,13 +667,16 @@ const friends = async function (req, res) {
   }
 
   module.exports = {
-    author,
-    random,
-    song,
-    album,
-    albums,
-    album_songs,
-    top_songs,
-    top_albums,
-    search_songs,
+    bestAirbnbs,
+    restaurants,
+    random_rest,
+    pizza,
+    vegetarian,
+    nearby_att,
+    attractions,
+    random_attr,
+    museums,
+    adult_only,
+    itinerary,
+    friends
   }

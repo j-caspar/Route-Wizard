@@ -9,9 +9,11 @@ const config = require('../config.json');
 export default function AlbumInfoPage() {
   const { album_id } = useParams();
 
+  const [airbnbData, setAirbnbData] = useState([{}]);
   const [songData, setSongData] = useState([{}]); // default should actually just be [], but empty object element added to avoid error in template code
   const [albumData, setAlbumData] = useState([]);
 
+  const [selectedAirbnbName, setSelectedAirbnbName] = useState(null);
   const [selectedSongId, setSelectedSongId] = useState(null);
 
   useEffect(() => {
