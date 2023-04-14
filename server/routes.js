@@ -64,9 +64,9 @@ const restaurants = async function (req, res) {
   const offset = pageSize * (page - 1);
 
   connection.query(`
-	SELECT name, subcategory, img_url
-	FROM restaurants
-	WHERE name LIKE '%${keyword}%' AND location = '${city}' AND subcategory = '${subcategory}'
+	SELECT R.name, R.location, R.subcategory, S.image
+	FROM restaurants R JOIN subcategory S ON R.subcategory = S.name
+  WHERE R.name LIKE '%${keyword}%' AND R.location LIKE '%${city}%' AND R.subcategory LIKE '%${subcategory}%'
   LIMIT ${pageSize}
   OFFSET ${offset}
   `, (err, data) => {
@@ -85,7 +85,7 @@ const random_rest = async function (req, res) {
   const city = req.query.city || 'Amsterdam';
 
   connection.query(`
-	SELECT R.name, R.subcategory, S.picture_url
+	SELECT R.name, R.subcategory, S.image
   FROM Restaurants R JOIN subcategory S ON R.subcategory = S.name
   WHERE location = '${city}'
   ORDER BY RAND() LIMIT 10
