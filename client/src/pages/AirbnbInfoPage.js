@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Container, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { useParams, Link } from 'react-router-dom';
+import { Container, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
 import AirbnbCard from '../components/AirbnbCard';
 import { formatDuration, formatReleaseDate } from '../helpers/formatter';
 const config = require('../config.json');
+
+export const openInNewTab = (url) => {
+  const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
+  if (newWindow) newWindow.opener = null;
+};
 
 export default function AlbumInfoPage() {
   const { bnb_name } = useParams();
@@ -17,61 +22,44 @@ export default function AlbumInfoPage() {
   const [selectedSongId, setSelectedSongId] = useState(null);
 
   useEffect(() => {
-    fetch(`http://${config.server_host}:${config.server_port}/airbnb/${bnb_name}`)
+    fetch(`http://${config.server_host}:${config.server_port}/airbnbs/${bnb_name}`)
       .then(res => res.json())
-      .then(resJson => setAirbnbData(resJson));
+      .then(resJson => setAirbnbData(resJson[0]));
   }, []);
 
   return (
+    
     <Container>
+      <h1 style={{ fontSize: 64, textAlign: 'center' }}>{airbnbData.name}</h1>
       {selectedAirbnbName && <AirbnbCard airbnbName={selectedAirbnbName} handleClose={() => setSelectedAirbnbName(null)} />}
       <Stack direction='row' justify='center'>
         <img
-          key={albumData.album_id}
-          src={albumData.thumbnail_url}
-          alt={`${albumData.title} album art`}
+          src={airbnbData.picture_url}
           style={{
             marginTop: '40px',
             marginRight: '40px',
-            marginBottom: '40px'
+            marginLeft: '40px',
+            marginBottom: '40px',
+            width: '1000px',
+            height: '700px',
+            alignSelf: 'center'
           }}
         />
-        <Stack>
-          <h1 style={{ fontSize: 64 }}>{albumData.title}</h1>
-          <h2>Released: {formatReleaseDate(albumData.release_date)}</h2>
-        </Stack>
+        
       </Stack>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell key='#'>#</TableCell>
-              <TableCell key='Title'>Title</TableCell>
-              <TableCell key='Plays'>Plays</TableCell>
-              <TableCell key='Duration'>Duration</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {
-              // TODO (TASK 23): render the table content by mapping the songData array to <TableRow> elements
-              // Hint: the skeleton code for the very first row is provided for you. Fill out the missing information and then use a map function to render the rest of the rows.
-              // Hint: it may be useful to refer back to LazyTable.js
-            }
-            {songData.map(song =>
-              <TableRow key={song.song_id}>
-                <TableCell key='#'>{song.number}</TableCell>
-                <TableCell key='Title'>
-                  <Link onClick={() => setSelectedSongId(song.song_id)}>
-                  {song.title}
-                  </Link>
-                </TableCell>
-                <TableCell key='Plays'>{song.plays}</TableCell>
-                <TableCell key='Duration'>{formatDuration(song.duration)}</TableCell>
-              </TableRow>
-              )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <h2>Listing URL:&nbsp;
+      <Link href="#" onClick = {() => openInNewTab(airbnbData.listing_url)}>{airbnbData.name}</Link></h2>
+      <p>Price/Night: ${airbnbData.price} </p>
+      <p>Neighborhood: {airbnbData.neighborhood} </p>
+      <p>Minimum # of nights: {airbnbData.min_nights} </p>
+      <p>Max # of guests: {airbnbData.num_accommodates} </p>
+      <p>Rating: {airbnbData.review_score} </p>
+      <p>Number of reviews: {airbnbData.num_reviews} </p>
+      {airbnbData.host_is_superhost == 't' &&
+        <h2>
+          This host is a superhost!
+        </h2>
+      }
     </Container>
   );
 }

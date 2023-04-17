@@ -31,7 +31,7 @@ export default function AirbnbCard({ airbnbName, handleClose }) {
     fetch(`http://${config.server_host}:${config.server_port}/airbnbs/${airbnbName}`)
     .then(res => res.json())
     .then(resJson => {
-      setAirbnbData(resJson[0]); console.log(resJson[0])
+      setAirbnbData(resJson[0]);
     })
   }, []);
 
@@ -62,11 +62,10 @@ export default function AirbnbCard({ airbnbName, handleClose }) {
         p={3}
         style={{ background: 'white', borderRadius: '16px', border: '2px solid #000', width: 600 }}
       >
-        <h1>{airbnbData.name}</h1>
-        <h2>Link:&nbsp;
-          <NavLink to={`/airbnb/${airbnbData.bnb_name}`}>{airbnbData.name}</NavLink>
-        </h2>
-        <p>Price/Night: {airbnbData.price} </p>
+        <h1>Get More Info:&nbsp;
+          <NavLink to={`/airbnbs/${airbnbData.name}`}>{airbnbData.name}</NavLink>
+        </h1>
+        <p>Price/Night: ${airbnbData.price} </p>
         <p>Neighborhood: {airbnbData.neighborhood} </p>
         <p>Minimum # of nights: {airbnbData.min_nights} </p>
         <p>Max # of guests: {airbnbData.num_accommodates} </p>
