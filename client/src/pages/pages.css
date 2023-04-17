@@ -3,7 +3,7 @@
     align-items: center;
     justify-content: center;
     height: 10vh;
-    color:peachpuff;
+    color:white;
     font-family: 'Candara';
     font-size: 30px;
   }
@@ -54,12 +54,12 @@
   }
 
   .navSpace {
-    padding: 150px;
+    padding: 10px;
   }
 
   .navColor {
     color: #fff;
-    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: midnightblue;
     text-decoration: none;
     font-size: xx-large;
