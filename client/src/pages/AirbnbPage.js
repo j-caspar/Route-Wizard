@@ -12,8 +12,9 @@ export default function SongsPage() {
     const [data, setData] = useState([]);
     const [selectedSongId, setSelectedSongId] = useState(null);
     const [selectedAirbnbName, setSelectedAirbnbName] = useState(null);
+    const [city, setCity] = useState(null);
 
-    const [guests, setGuests] = useState([0, 99]);
+    const [numPeople, setNumPeople] = useState([0, 99]);
     const [nights, setNights] = useState([0, 365]);
     const [price, setPrice] = useState([0, 1000]);
     const [duration, setDuration] = useState([60, 660]);
@@ -22,11 +23,6 @@ export default function SongsPage() {
     const [energy, setEnergy] = useState([0, 1]);
     const [valence, setValence] = useState([0, 1]);
     const [explicit, setExplicit] = useState(false);
-
-    const [value, setValue] = useState('fruit');
-    const handleChange = (event) => {
-        setValue(event.target.value);
-    }
 
     useEffect(() => {
         fetch(`http://${config.server_host}:${config.server_port}/best_airbnb`)
@@ -38,22 +34,18 @@ export default function SongsPage() {
       }, []);
 
     const search = () => {
-        fetch(`http://${config.server_host}:${config.server_port}/airbnbs?guests=${guests}` +
+        fetch(`http://${config.server_host}:${config.server_port}/airbnbs?numPeople=${numPeople}` +
             `&nights=${nights}` +
-            `&price=${price}` +
-            `&duration_low=${duration[0]}&duration_high=${duration[1]}` +
-            `&plays_low=${plays[0]}&plays_high=${plays[1]}` +
-            `&danceability_low=${danceability[0]}&danceability_high=${danceability[1]}` +
-            `&energy_low=${energy[0]}&energy_high=${energy[1]}` +
-            `&valence_low=${valence[0]}&valence_high=${valence[1]}` +
-            `&explicit=${explicit}`
+            `&city=${city}` +
+            `&minPrice=${price[0]}` +
+            `&maxPrice=${price[1]}`
         )
             .then(res => res.json())
             .then(resJson => {
                 // DataGrid expects an array of objects with a unique id.
                 // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
-                const songsWithId = resJson.map((song) => ({ id: song.song_id, ...song }));
-                setData(songsWithId);
+                const airbnbsWithName = resJson.map((airbnb) => ({ id: airbnb.name, ...airbnb }));
+                setData(airbnbsWithName);
             });
     }
 
@@ -65,11 +57,7 @@ export default function SongsPage() {
         { field: 'name', headerName: 'Name', width: 300, renderCell: (params) => (
             <Link onClick={() => setSelectedAirbnbName(params.row.id)}>{params.value}</Link>
         ) },
-        { field: 'picture_url', headerName: 'Image' },
         { field: 'price', headerName: 'Price/Night' },
-        { field: 'neighborhood', headerName: 'Neighborhood' },
-        { field: 'min_nights', headerName: 'Min # of nights' },
-        { field: 'num_accommodates', headerName: '# accomodates' },
         { field: 'review_score', headerName: 'Rating' }
     ]
 
@@ -84,15 +72,13 @@ export default function SongsPage() {
         <Container>
             {selectedAirbnbName && <AirbnbCard airbnbName={selectedAirbnbName} handleClose={() => setSelectedAirbnbName(null)} />}
             <h2 className='centered-h2-rest'>Airbnbs</h2>
-            <div>
-                <h4 className='coolContainerH4'>Number of Guests:</h4>
-                <Grid item xs={8} className='coolContainerGrid'>
-                    <TextField label='#' value={guests} onChange={(e) => setGuests(e.target.value)} style={{ width: 70, height: 100 }} />
+                <h4>Number of Guests:</h4>
+                <Grid item xs={8}>
+                    <TextField label='#' value={numPeople} onChange={(e) => setNumPeople(e.target.value)} style={{ width: 70, height: 100 }} />
                 </Grid>
-            </div>
 
             <h4>Number of nights:</h4>
-            <Grid container spacing={6}>
+            <Grid container spacing={8}>
 
                 <Grid item xs={8}>
                     <TextField label='#' value={nights} onChange={(e) => setNights(e.target.value)} style={{ width: 70, height: 100 }} />
@@ -103,14 +89,14 @@ export default function SongsPage() {
             <Grid container spacing={6}>
 
                 <Grid item xs={8}>
-                    <select value={value} onChange={handleChange} className='dropdown'>
-                        <option value="amsterdam">Pick a city from the dropdown</option>
-                        <option value="amsterdam">Amsterdam</option>
-                        <option value="barcelona">Barcelona</option>
-                        <option value="berlin">Berlin</option>
-                        <option value="london">London</option>
-                        <option value="paris">Paris</option>
-                        <option value="rome">Rome</option>
+                    <select value={city} onChange={(e) => setCity(e.target.value)} className='dropdown'>
+                        <option city="amsterdam">Pick a city from the dropdown</option>
+                        <option city="amsterdam">Amsterdam</option>
+                        <option city="barcelona">Barcelona</option>
+                        <option city="berlin">Berlin</option>
+                        <option city="london">London</option>
+                        <option city="paris">Paris</option>
+                        <option city="rome">Rome</option>
                     </select>
                 </Grid>
             </Grid>
