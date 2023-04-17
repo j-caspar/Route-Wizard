@@ -86,68 +86,42 @@ export default function SongsPage() {
     <Container>
       {selectedSongId && <AirbnbCard songId={selectedSongId} handleClose={() => setSelectedSongId(null)} />}
       <h2>Build an itinerary</h2>
-      <h4>Days</h4>
-      <Grid container spacing={0}>
+      <Grid container spacing={6}>
       
-        <Grid item xs={7}>
-          <TextField label='Enter number of days (Ex: 2)' value={title} onChange={(e) => setTitle(e.target.value)} style={{ width: 1000, height: 100 }}/>
+        <Grid item xs={6}>
+          <h4>Length of Stay</h4>
+          <TextField label='Number of days (Ex: 2)' value={title} onChange={(e) => setTitle(e.target.value)} style={{ width: 200, height: 100 }}/>
         </Grid>
-
-        <Grid item xs={8}>
-
-        <h4>City:</h4>
-            <Grid container spacing={6}>
-
-                <Grid item xs={8}>
-                    <select value={value} onChange={handleChange} className='dropdown'>
-                    <option value="amsterdam">Pick a city from the dropdown</option>
-                        <option value="amsterdam">Amsterdam</option>
-                        <option value="barcelona">Barcelona</option>
-                        <option value="berlin">Berlin</option>
-                        <option value="london">London</option>
-                        <option value="paris">Paris</option>
-                        <option value="rome">Rome</option>
-                    </select>
-                </Grid>
-            </Grid>
-
-<h4>I don't like:</h4>
-      
-   
-          <FormControlLabel
-            label='Thing #1'
-            control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
-          />
-          <FormControlLabel
-            label='Thing #2'
-            control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
-          />
-          <FormControlLabel
-            label='Thing #3'
-            control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
-          />
-          <FormControlLabel
-            label='Thing #4'
-            control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
-          />
-          <FormControlLabel
-            label='Thing #5'
-            control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
-          />
-          <FormControlLabel
-            label='Thing #6'
-            control={<Checkbox checked={explicit} onChange={(e) => setExplicit(e.target.checked)} />}
+        <Grid item xs={6}>
+          <h4>Number of Guests</h4>
+          <TextField label='Number of guests (Ex: 1)' value={title} onChange={(e) => setTitle(e.target.value)} style={{ width: 200, height: 100 }}/>
+        </Grid>
+        <Grid item xs={6}>
+          <h4>City</h4>
+          <select value={value} onChange={handleChange} className='dropdown'>
+          <option value="amsterdam">Pick a city from the dropdown</option>
+            <option value="amsterdam">Amsterdam</option>
+            <option value="barcelona">Barcelona</option>
+            <option value="berlin">Berlin</option>
+            <option value="london">London</option>
+            <option value="paris">Paris</option>
+            <option value="rome">Rome</option>
+          </select>
+        </Grid>
+        <Grid item xs={6}>
+          <h4>Price</h4>
+          <Slider
+            value={valence}
+            min={0}
+            max={1000}
+            step={50}
+            onChange={(e, newValue) => setValence(newValue)}
+            valueLabelDisplay='auto'
           />
         </Grid>
 
-        <Grid item xs={8}>
-
-<h4>I really want to go to: </h4>
-      
-   
-        </Grid>
-        
       </Grid>
+
       <Button onClick={() => search() } style={{color: 'white', backgroundColor: 'gray', fontSize: '3rem', left: '50%', transform: 'translateX(-50%)' }}>
         BUILD
       </Button>
