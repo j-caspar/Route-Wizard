@@ -66,13 +66,7 @@ export default function SongsPage() {
     { field: 'energy', headerName: 'Energy' },
     { field: 'valence', headerName: 'Valence' },
     { field: 'tempo', headerName: 'Tempo' },
-    { field: 'key_mode', headerName: 'Key' },
-    { field: 'amsterdam', headerName: 'Amsterdam' },
-    { field: 'barcelona', headerName: 'Barcelona' },
-    { field: 'berlin', headerName: 'Berlin' },
-    { field: 'london', headerName: 'London' },
-    { field: 'paris', headerName: 'Paris' },
-    { field: 'rome', headerName: 'Rome' }
+    { field: 'key_mode', headerName: 'Key' }
   ]
 
   // This component makes uses of the Grid component from MUI (https://mui.com/material-ui/react-grid/).
