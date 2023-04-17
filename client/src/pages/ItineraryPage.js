@@ -12,17 +12,21 @@ export default function SongsPage() {
   const [data, setData] = useState([]);
   const [selectedSongId, setSelectedSongId] = useState(null);
 
-  const [title, setTitle] = useState('');
-  const [duration, setDuration] = useState([60, 660]);
-  const [plays, setPlays] = useState([0, 1100000000]);
-  const [danceability, setDanceability] = useState([0, 1]);
-  const [energy, setEnergy] = useState([0, 1]);
-  const [valence, setValence] = useState([0, 1]);
-  const [explicit, setExplicit] = useState(false);
+  // const [title, setTitle] = useState('');
+  // const [duration, setDuration] = useState([60, 660]);
+  // const [plays, setPlays] = useState([0, 1100000000]);
+  // const [danceability, setDanceability] = useState([0, 1]);
+  // const [energy, setEnergy] = useState([0, 1]);
+  // const [valence, setValence] = useState([0, 1]);
+  // const [explicit, setExplicit] = useState(false);
 
-  const [value, setValue] = useState('fruit');
+  const [family, setFamily] = useState(false);
+  const [price, setPrice] = useState([20, 1000]);
+  const [days, setDays] = useState('1');
+  const [guests, setGuests] = useState('1');
+  const [city, setCity] = useState('Amsterdam');
     const handleChange = (event) => {
-        setValue(event.target.value);
+        setCity(event.target.city);
     }
 
   useEffect(() => {
@@ -34,14 +38,13 @@ export default function SongsPage() {
       });
   }, []);
 
+  // add lat and lng from map
   const search = () => {
-    fetch(`http://${config.server_host}:${config.server_port}/search_songs?title=${title}` +
-      `&duration_low=${duration[0]}&duration_high=${duration[1]}` +
-      `&plays_low=${plays[0]}&plays_high=${plays[1]}` +
-      `&danceability_low=${danceability[0]}&danceability_high=${danceability[1]}` +
-      `&energy_low=${energy[0]}&energy_high=${energy[1]}` +
-      `&valence_low=${valence[0]}&valence_high=${valence[1]}` +
-      `&explicit=${explicit}`
+    fetch(`http://${config.server_host}:${config.server_port}/itinerary?city=${city}` +
+      `&days=${days}` + 
+      `&num_people=${guests}` + 
+      `&min_price=${price[0]}&max_price=${price[1]}` +
+      `&adult_only=${family}`
     )
       .then(res => res.json())
       .then(resJson => {
@@ -60,19 +63,13 @@ export default function SongsPage() {
     { field: 'title', headerName: 'Title', width: 300, renderCell: (params) => (
         <Link onClick={() => setSelectedSongId(params.row.song_id)}>{params.value}</Link>
     ) },
-    { field: 'duration', headerName: 'Duration' },
-    { field: 'plays', headerName: 'Plays' },
+    { field: 'name', headerName: 'Name' },
+    { field: 'type', headerName: 'Type' },
     { field: 'danceability', headerName: 'Danceability' },
     { field: 'energy', headerName: 'Energy' },
     { field: 'valence', headerName: 'Valence' },
     { field: 'tempo', headerName: 'Tempo' },
-    { field: 'key_mode', headerName: 'Key' },
-    { field: 'amsterdam', headerName: 'Amsterdam' },
-    { field: 'barcelona', headerName: 'Barcelona' },
-    { field: 'berlin', headerName: 'Berlin' },
-    { field: 'london', headerName: 'London' },
-    { field: 'paris', headerName: 'Paris' },
-    { field: 'rome', headerName: 'Rome' }
+    { field: 'key_mode', headerName: 'Key' }
   ]
 
   // This component makes uses of the Grid component from MUI (https://mui.com/material-ui/react-grid/).
@@ -88,17 +85,24 @@ export default function SongsPage() {
       <h2>Build an itinerary</h2>
       <Grid container spacing={6}>
       
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <h4>Length of Stay</h4>
-          <TextField label='Number of days (Ex: 2)' value={title} onChange={(e) => setTitle(e.target.value)} style={{ width: 200, height: 100 }}/>
+          <TextField label='Number of days (Ex: 2)' value={days} onChange={(e) => setDays(e.target.value)} style={{ width: 300, height: 100 }}/>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <h4>Number of Guests</h4>
-          <TextField label='Number of guests (Ex: 1)' value={title} onChange={(e) => setTitle(e.target.value)} style={{ width: 200, height: 100 }}/>
+          <TextField label='Number of guests (Ex: 1)' value={guests} onChange={(e) => setGuests(e.target.value)} style={{ width: 300, height: 100 }}/>
+        </Grid>
+        <Grid item xs={4}>
+          <FormControlLabel
+            label='Only family friendly activities?' 
+            control={<Checkbox checked={family} onChange={(e) => setFamily(e.target.checked)} />}
+            style={{transform: 'translateY(170%)' }}
+          />
         </Grid>
         <Grid item xs={6}>
           <h4>City</h4>
-          <select value={value} onChange={handleChange} className='dropdown'>
+          <select value={city} onChange={handleChange} className='dropdown' style={{ width: 300, height: 50 }}>
           <option value="amsterdam">Pick a city from the dropdown</option>
             <option value="amsterdam">Amsterdam</option>
             <option value="barcelona">Barcelona</option>
@@ -111,11 +115,11 @@ export default function SongsPage() {
         <Grid item xs={6}>
           <h4>Price</h4>
           <Slider
-            value={valence}
-            min={0}
+            value={price}
+            min={20}
             max={1000}
-            step={50}
-            onChange={(e, newValue) => setValence(newValue)}
+            step={20}
+            onChange={(e, newValue) => setPrice(newValue)}
             valueLabelDisplay='auto'
           />
         </Grid>
