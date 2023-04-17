@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
-import SongCard from '../components/AirbnbCard';
+import AirbnbCard from '../components/AirbnbCard';
 import { formatDuration, formatReleaseDate } from '../helpers/formatter';
 const config = require('../config.json');
 
@@ -24,7 +24,7 @@ export default function AlbumInfoPage() {
 
   return (
     <Container>
-      {selectedAirbnbName && <SongCard airbnbName={selectedAirbnbName} handleClose={() => setSelectedAirbnbName(null)} />}
+      {selectedAirbnbName && <AirbnbCard airbnbName={selectedAirbnbName} handleClose={() => setSelectedAirbnbName(null)} />}
       <Stack direction='row' justify='center'>
         <img
           key={albumData.album_id}

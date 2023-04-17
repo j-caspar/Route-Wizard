@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Box, Button, ButtonGroup, Link, Modal } from '@mui/material';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
-import { NavLink } from 'react-router-dom';
+import { useParams, NavLink } from 'react-router-dom';
 
 import { formatDuration } from '../helpers/formatter';
 const config = require('../config.json');
@@ -10,10 +10,8 @@ const config = require('../config.json');
 // Typically, modals will conditionally appear (specified by the Modal's open property)
 // but in our implementation whether the Modal is open is handled by the parent component
 // (see HomePage.js for example), since it depends on the state (selectedSongId) of the parent
-export default function SongCard({ airbnbName, handleClose }) {
+export default function AirbnbCard({ airbnbName, handleClose }) {
   const [airbnbData, setAirbnbData] = useState({});
-  const [songData, setSongData] = useState({});
-  const [albumData, setAlbumData] = useState({});
 
   const [barRadar, setBarRadar] = useState(true);
 
@@ -30,9 +28,11 @@ export default function SongCard({ airbnbName, handleClose }) {
     //       .then(res => res.json())
     //       .then(resJson => set state variable with album data)
     //     })
-    fetch(`http://${config.server_host}:${config.server_port}/airbnb/${`bnb_name`}`)
+    fetch(`http://${config.server_host}:${config.server_port}/airbnbs/${airbnbName}`)
     .then(res => res.json())
-    .then(resJson => {setAirbnbData(resJson);})
+    .then(resJson => {
+      setAirbnbData(resJson[0]); console.log(resJson[0])
+    })
   }, []);
 
   const chartData = [

@@ -3,7 +3,7 @@ import { Box, Button, Checkbox, Container, FormControlLabel, Grid, Link, Slider,
 import { DataGrid } from '@mui/x-data-grid';
 import './pages.css';
 
-import SongCard from '../components/AirbnbCard';
+import AirbnbCard from '../components/AirbnbCard';
 import { formatDuration } from '../helpers/formatter';
 const config = require('../config.json');
 
@@ -86,7 +86,7 @@ export default function SongsPage() {
     // will automatically lay out all the grid items into rows based on their xs values.
     return (
         <Container>
-            {selectedSongId && <SongCard songId={selectedSongId} handleClose={() => setSelectedSongId(null)} />}
+            {selectedSongId && <AirbnbCard songId={selectedSongId} handleClose={() => setSelectedSongId(null)} />}
             <h2 className='centered-h2-rest'>Attractions</h2>
             <h4>I'm looking for:</h4>
             <Grid container spacing={6}>

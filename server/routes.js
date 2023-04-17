@@ -23,7 +23,7 @@ const bestAirbnbs = async function (req, res) {
         SELECT name, lat, lng, review_score
         FROM accommodations
         ORDER BY review_score DESC
-        LIMIT 500
+        LIMIT 100
     ),
     nearby_restaurants AS (
         SELECT a1.name AS ac_name, COUNT(DISTINCT a3.name) AS num_restaurants
@@ -66,7 +66,7 @@ const restaurants = async function (req, res) {
   connection.query(`
 	SELECT R.name, R.location, R.subcategory, S.image
 	FROM restaurants R JOIN subcategory S ON R.subcategory = S.name
-  WHERE R.name LIKE '%${keyword}%' AND R.location LIKE '%${city}%' AND R.subcategory LIKE '%${subcategory}%'
+  WHERE R.name LIKE '%${keyword}%' AND R.location LIKE '%${city}%' AND R.subcategory LIKE '%${keyword}%'
   LIMIT ${pageSize}
   OFFSET ${offset}
   `, (err, data) => {

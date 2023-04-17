@@ -32,7 +32,7 @@ export default function App() {
         <NavBar />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/airbnb/:bnb_name" element={<AirbnbInfoPage />} />
+          <Route path="/airbnbs/:bnb_name" element={<AirbnbInfoPage />} />
           <Route path="/itinerary" element={<SongsPage />} />
           <Route path="/restaurants" element={<RestaurantsPage />} />
           <Route path="/attractions" element={<AttractionsPage />} />
