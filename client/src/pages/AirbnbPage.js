@@ -80,6 +80,13 @@ export default function SongsPage() {
   }
 
     const search = () => {
+        // console.log("numPeople: ", numPeople);
+        // console.log("nights: ", nights);
+        // console.log("city: ", city);
+        // console.log("minPrice: ", price[0]);
+        // console.log("maxPrice: ", price[1]);
+        // console.log("lat: ", lat);
+        // console.log("lng: ", lng);
         fetch(`http://${config.server_host}:${config.server_port}/airbnbs?numPeople=${numPeople}` +
             `&nights=${nights}` +
             `&city=${city}` +
