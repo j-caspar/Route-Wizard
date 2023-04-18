@@ -68,26 +68,24 @@ export default function SongsPage() {
             strictBounds: false
           }
         });
-    
+        
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(latCenter, lngCenter),
+            map: map,
+        });
+
         map.setOptions({ minZoom: 12, maxZoom: 20 });
         map.addListener('click', function(event) {
             const lat = event.latLng.lat();
             const lng = event.latLng.lng();
+            marker.setPosition({lat: lat, lng: lng});
             setLat(lat);
             setLng(lng);
-            console.log("Lat: " + lat + ", Lng: " + lng);
         });
         map.setOptions({ minZoom: 12, maxZoom: 20 });
   }
 
     const search = () => {
-        // console.log("numPeople: ", numPeople);
-        // console.log("nights: ", nights);
-        // console.log("city: ", city);
-        // console.log("minPrice: ", price[0]);
-        // console.log("maxPrice: ", price[1]);
-        // console.log("lat: ", lat);
-        // console.log("lng: ", lng);
         fetch(`http://${config.server_host}:${config.server_port}/airbnbs?numPeople=${numPeople}` +
             `&nights=${nights}` +
             `&city=${city}` +
@@ -144,13 +142,18 @@ export default function SongsPage() {
             <div id="map" style={{ height: '500px'}}></div>
             </Grid>
 
+            <Grid item xs={12} sm={4}>
+                <div style={{ textAlign: "center" }}>
+                    <h5>Click on the map to set a desired location</h5>
+                </div>
+            </Grid>
+
             <h4>City:</h4>
             <Grid container spacing={6}>
 
                 <Grid item xs={8}>
                     <select value={city} onChange={(e) => {setCity(e.target.value); setLat(cityCoordinates[e.target.value].latCenter);
                     setLng(cityCoordinates[e.target.value].lngCenter)}} className='dropdown'>
-                        <option value="Amsterdam">Pick a city from the dropdown</option>
                         <option value="Amsterdam">Amsterdam</option>
                         <option value="Barcelona">Barcelona</option>
                         <option value="Berlin">Berlin</option>
