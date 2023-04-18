@@ -140,15 +140,18 @@ const vegetarian = async function (req, res) {
   });
 }
 
-// GET /nearby_attr
-const nearby_attr = async function (req, res) {
+// GET /nearby_nightlife
+const nearby_nightlife = async function (req, res) {
   const lng = req.query.lng ;
   const lat = req.query.lat ;
   const location = req.query.location ;
 
   connection.query(`
-  SELECT *
-  FROM Attractions A JOIN Subcategory S ON A.subcategory = S.name
+  SELECT A.name, A.subcategory, S.image, A.lat, A.lng
+  FROM attractions A JOIN subcategory S ON A.subcategory = S.name
+  WHERE location = '${location}' AND S.adult_only = true
+  GROUP BY A.name, A.subcategory, S.image
+  ORDER BY MIN(SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)))
   LIMIT 10
   `, (err, data) => {
     if (err || data.length === 0) {
@@ -163,23 +166,18 @@ const nearby_attr = async function (req, res) {
 
 // GET /nearby_rest
 const nearby_rest = async function (req, res) {
-  const lng = req.query.lng;
-  const lat = req.query.lat;
+  const lng = req.query.lng ;
+  const lat = req.query.lat ;
+  const location = req.query.location ;
 
   connection.query(`
-  CREATE TABLE tempDist(name varchar(255), dist DECIMAL(28, 20));
-  INSERT INTO tempDist(name, dist)
-  SELECT name, (SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)))
-  FROM location
-  WHERE type = 'Restaurant';
-  
-  CREATE INDEX IX_closest ON tempDist(dist);
-  
-  SELECT R.name, R.subcategory, tempDist.dist
-  FROM restaurants R JOIN tempDist USE INDEX(IX_closest) ON R.name = tempDist.name
-  LIMIT 10;
-  
-  DROP TABLE IF EXISTS tempDist;`, (err, data) => {
+  SELECT A.name, A.subcategory, S.image, A.lat, A.lng
+  FROM restaurants A JOIN subcategory S ON A.subcategory = S.name
+  WHERE location = '${location}'
+  GROUP BY A.name, A.subcategory, S.image
+  ORDER BY MIN(SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)))
+  LIMIT 10
+  `, (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
       res.json({});
@@ -188,6 +186,33 @@ const nearby_rest = async function (req, res) {
       res.json(data);
     }
   });
+
+  // const lng = req.query.lng;
+  // const lat = req.query.lat;
+
+  // connection.query(`
+  // CREATE TABLE tempDist(name varchar(255), dist DECIMAL(28, 20));
+  // INSERT INTO tempDist(name, dist)
+  // SELECT name, (SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)))
+  // FROM location
+  // WHERE type = 'Restaurant';
+  
+  // CREATE INDEX IX_closest ON tempDist(dist);
+  
+  // SELECT R.name, R.subcategory, tempDist.dist
+  // FROM restaurants R JOIN tempDist USE INDEX(IX_closest) ON R.name = tempDist.name
+  // LIMIT 10
+  // ;
+  
+  // DROP TABLE IF EXISTS tempDist`, (err, data) => {
+  //   if (err || data.length === 0) {
+  //     console.log(err);
+  //     res.json({});
+  //   } else {
+  //     console.log(data);
+  //     res.json(data);
+  //   }
+  // });
 }
 
 // GET /attractions
@@ -748,7 +773,7 @@ const friends = async function (req, res) {
     random_rest,
     pizza,
     vegetarian,
-    nearby_attr,
+    nearby_nightlife,
     attractions,
     random_attr,
     museums,

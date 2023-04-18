@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, json } from 'react-router-dom';
 import { Container, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import AirbnbCard from '../components/AirbnbCard';
@@ -48,22 +48,17 @@ export default function AlbumInfoPage() {
       .then(res => res.json())
       .then(resJson => {
         setAirbnbData(resJson[0]);
-        console.log("lat: ", resJson[0].lat);
-        console.log("lng: ", resJson[0].lng);
-        console.log("location: ", resJson[0].location);
-  
-        fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_attr?lng=${resJson[0].lng}` +
+        fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_nightlife?lng=${resJson[0].lng}` +
           `&lat=${resJson[0].lat}` + `&location=${resJson[0].location}`
         )
           .then(res => res.json())
           .then(resJson => {
-            console.log(resJson); // Log the resJson variable to the console
             const attractions = resJson.map((attr) => ({ id: attr.name, ...attr }));
             setNearbyAttractions(attractions);
           });
   
         fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_rest?lng=${resJson[0].lng}` +
-          `&lat=${resJson[0].lat}`
+          `&lat=${resJson[0].lat}` + `&location=${resJson[0].location}`
         )
           .then(res => res.json())
           .then(resJson => {
@@ -72,20 +67,20 @@ export default function AlbumInfoPage() {
           });
       });
   }, []);
-
+  
   useEffect(() => {
-    if (airbnbData.location) {
+    if (airbnbData.location && nearbyRestaurants.length > 0) {
       const { latCenter, lngCenter, latMin, latMax, lngMin, lngMax } = cityCoordinates[airbnbData.location];
       initMap(airbnbData.lat, airbnbData.lng, latMin, latMax, lngMin, lngMax);
     }
-  }, [airbnbData.location]);
-
+  }, [airbnbData.location, nearbyRestaurants]);
+  
   function initMap(latCenter, lngCenter, latMin, latMax, lngMin, lngMax) {
     var bounds = new google.maps.LatLngBounds(
       new google.maps.LatLng(latMin - 0.001, lngMin - 0.001), 
       new google.maps.LatLng(latMax + 0.001, lngMax + 0.001)
     );
-
+  
     var map = new google.maps.Map(document.getElementById('map'), {
       zoom: 14,
       center: {lat: latCenter, lng: lngCenter},
@@ -99,33 +94,48 @@ export default function AlbumInfoPage() {
     new google.maps.Marker({
       position: new google.maps.LatLng(airbnbData.lat, airbnbData.lng),
       map: map,
-        icon: {url: "https://maps.gstatic.com/mapfiles/place_api/icons/lodging-71.png",
-        scaledSize: new google.maps.Size(35, 35),
-     },
+      icon: {url: "https://maps.gstatic.com/mapfiles/place_api/icons/lodging-71.png",
+      title: airbnbData.name,
+      scaledSize: new google.maps.Size(35, 35),
+    },
     });
 
-    // if (nearbyRestaurants.length === 0) {
-    //   console.log('The nearbyRestaurants array is empty');
-    // }
-
-  nearbyRestaurants.map((restaurant) => {
-    var marker = new google.maps.Marker({
-      position: new google.maps.LatLng(restaurant.lat, restaurant.lng),
-      map: map,
-      icon: "https://maps.google.com/mapfiles/ms/icons/restaurant.png", 
-      title: restaurant.name,
-    });
-        marker.addListener('click', function() {
-      var infowindow = new google.maps.InfoWindow({
-        content: this.getTitle()
+    nearbyRestaurants.map((restaurant) => {
+      var markerTitle = restaurant.name;
+      if (restaurant.subcategory) {
+        markerTitle += ": " + restaurant.subcategory;
+      }
+      var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(restaurant.lat, restaurant.lng),
+        map: map,
+        icon: "https://maps.google.com/mapfiles/ms/icons/restaurant.png", 
+        title: markerTitle,
       });
-      infowindow.open(map, this);
+      marker.addListener('click', function() {
+        var infowindow = new google.maps.InfoWindow({
+          content: this.getTitle()
+        });
+        infowindow.open(map, this);
+      });
     });
-  });
 
-
-  map.setOptions({ minZoom: 12, maxZoom: 20 });
-}
+    nearbyAttractions.map((attraction) => {
+      var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(attraction.lat, attraction.lng),
+        map: map,
+        icon: "https://maps.google.com/mapfiles/ms/icons/bar.png",
+        title: `${attraction.name}: ${attraction.subcategory}`
+      });
+      marker.addListener('click', function() {
+        var infowindow = new google.maps.InfoWindow({
+          content: this.getTitle()
+        });
+        infowindow.open(map, this);
+      });
+    });
+  
+    map.setOptions({ minZoom: 12, maxZoom: 20 });
+  }
 
   return (
     
@@ -160,7 +170,10 @@ export default function AlbumInfoPage() {
           This host is a superhost!
         </h2>
       }
+
+      <br></br>
       <h2>Nearby Attractions and Atractions</h2>
+      <p>Click on each marker to learn more</p>
 
       <div id="map" style={{ height: '500px'}}></div>     
 
