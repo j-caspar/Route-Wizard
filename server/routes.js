@@ -67,12 +67,10 @@ const restaurants = async function (req, res) {
 	SELECT R.name, R.location, R.subcategory, S.image
 	FROM restaurants R JOIN subcategory S ON R.subcategory = S.name
   WHERE R.name LIKE '%${keyword}%' AND R.location LIKE '%${city}%' AND R.subcategory LIKE '%${keyword}%'
-  LIMIT ${pageSize}
-  OFFSET ${offset}
   `, (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
-      res.json({});
+      res.json([]);
     } else {
       console.log(data);
       res.json(data);
@@ -92,7 +90,7 @@ const random_rest = async function (req, res) {
   `, (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
-      res.json({});
+      res.json([]);
     } else {
       console.log(data);
       res.json(data);

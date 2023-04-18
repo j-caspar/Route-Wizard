@@ -9,33 +9,30 @@ const config = require('../config.json');
 export default function RestaurantsPage() {
     const [pageSize, setPageSize] = useState(10);
     const [data, setData] = useState([]);
-    const [selectedRestaurant, setRestaurant] = useState(null);
-
-    const [name, setName] = useState('');
+    const [keyword, setKeyword] = useState('');
+    const [city, setCity] = useState('Amsterdam');
 
     const [value, setValue] = useState('fruit');
-    const handleChange = (event) => {
-        setValue(event.target.value);
-    }
 
     useEffect(() => {
         fetch(`http://${config.server_host}:${config.server_port}/restaurants`)
             .then(res => res.json())
             .then(resJson => {
-                const data = resJson.map((restaurant) => ({ name: restaurant.name, city: restaurant.city, subcategory: restaurant.subcategory}));
+                const data = resJson.map((restaurant) => ({ id: restaurant.name, city: restaurant.city, subcategory: restaurant.subcategory, ...restaurant}));
                 setData(data);
             });
     }, []);
 
     
     const search = () => {
-        fetch(`http://${config.server_host}:${config.server_port}/restaurants`
+        fetch(`http://${config.server_host}:${config.server_port}/restaurants?keyword=${keyword}` +
+        `&city=${city}`
         )
             .then(res => res.json())
             .then(resJson => {
                 // DataGrid expects an array of objects with a unique id.
                 // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
-                const data = resJson.map((restaurant) => ({ name: restaurant.name, city: restaurant.city, subcategory: restaurant.subcategory}));
+                const data = resJson.map((restaurant) => ({ id: restaurant.name, city: restaurant.city, subcategory: restaurant.subcategory, ...restaurant}));
                 setData(data);
             });
     }
@@ -48,7 +45,7 @@ export default function RestaurantsPage() {
     const columns = [
         {field: 'name', headerName: 'Name', width: 400},
         { field: 'subcategory', headerName: 'Subcategory', width: 300},
-        { field: 'city', headerName: 'City', width: 300},
+        { field: 'location', headerName: 'City', width: 300},
     ]
 
     // This component makes uses of the Grid component from MUI (https://mui.com/material-ui/react-grid/).
@@ -64,14 +61,14 @@ export default function RestaurantsPage() {
             <h4>I'm looking for:</h4>
             <Grid container spacing={6}>
                 <Grid item xs={8}>
-                    <TextField label='Keyword Search' value={name} /*onChange={(e) => setTitle(e.target.value)} */ style={{ width: 1000, height: 100 }} />
+                    <TextField label='Keyword Search' value={keyword} onChange={(e) => setKeyword(e.target.value)} style={{ width: 1000, height: 100 }} />
                 </Grid>
             </Grid>
 
             <h4>City:</h4>
             <Grid container spacing={6}>
                 <Grid item xs={8}>
-                    <select value={value} onChange={handleChange} className='dropdown'>
+                <select value={city} onChange={(e) => {setCity(e.target.value)}} className='dropdown'>
                     <option value="amsterdam">Pick a city from the dropdown</option>
                         <option value="amsterdam">Amsterdam</option>
                         <option value="barcelona">Barcelona</option>
@@ -94,6 +91,7 @@ export default function RestaurantsPage() {
                 rows={data}
                 columns={columns}
                 pageSize={pageSize}
+                rowsPerPageOptions={[5, 10, 25]}
                 onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                 autoHeight
             />
