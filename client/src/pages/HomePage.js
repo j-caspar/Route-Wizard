@@ -3,6 +3,8 @@ import { Box, Container } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import './pages.css';
 import world from '../images/world.jpeg';
+import world2 from '../images/world2.png';
+
 
 const config = require('../config.json');
 
@@ -39,7 +41,7 @@ export default function AlbumsPage() {
           className="left-panel"
           p={3}
           m={2}
-          style={{width: 300, height: 100, background: 'paleturquoise', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
+          style={{width: 300, height: 100, background: 'peachpuff', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
         >
           <h4><NavLink className='navColor' to={`/airbnbs`}>AIRBNBS</NavLink></h4>
          </Box>
@@ -47,7 +49,7 @@ export default function AlbumsPage() {
           className="middle-panel"
           p={3}
           m={2}
-          style={{ width: 300, height: 100, background: 'paleturquoise', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
+          style={{ width: 300, height: 100, background: 'peachpuff', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
         >
           <h4><NavLink className='navColor' to={`/attractions`}>ATTRACTIONS</NavLink></h4>
          </Box>
@@ -55,7 +57,7 @@ export default function AlbumsPage() {
           className="right-panel"
           p={3}
           m={2}
-          style={{ width: 300, height: 100, background: 'paleturquoise', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
+          style={{ width: 300, height: 100, background: 'peachpuff', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
         >
           <h4><NavLink className='navColor' to={`/restaurants`}>RESTAURANTS</NavLink></h4>
          </Box>
@@ -70,7 +72,7 @@ export default function AlbumsPage() {
       <Box
           p={3}
           m={2}
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',width: 300, height: 100, background: 'paleturquoise', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',width: 300, height: 100, background: 'peachpuff', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
         >
           <h4><NavLink className='navColor' to={`/itinerary`}>BUILD AN ITINERARY</NavLink></h4>
          </Box>

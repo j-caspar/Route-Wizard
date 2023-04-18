@@ -6,23 +6,42 @@ import './pages.css';
 import AirbnbCard from '../components/AirbnbCard';
 import { formatDuration } from '../helpers/formatter';
 const config = require('../config.json');
+const google=window.google
 
 export default function SongsPage() {
     const [pageSize, setPageSize] = useState(10);
     const [data, setData] = useState([]);
-    const [selectedSongId, setSelectedSongId] = useState(null);
     const [selectedAirbnbName, setSelectedAirbnbName] = useState(null);
-    const [city, setCity] = useState(null);
+    const [city, setCity] = useState('Amsterdam');
 
     const [numPeople, setNumPeople] = useState([1]);
     const [nights, setNights] = useState([1]);
     const [price, setPrice] = useState([0, 1000]);
-    const [duration, setDuration] = useState([60, 660]);
-    const [plays, setPlays] = useState([0, 1100000000]);
-    const [danceability, setDanceability] = useState([0, 1]);
-    const [energy, setEnergy] = useState([0, 1]);
-    const [valence, setValence] = useState([0, 1]);
-    const [explicit, setExplicit] = useState(false);
+    const [lat, setLat] = useState(52.3676);
+    const [lng, setLng] = useState(4.9041);
+
+
+    const cityCoordinates = {
+        Amsterdam: {latCenter: 52.3676, lngCenter: 4.9041,
+            latMin: 52.29034, latMax: 52.42512, lngMin: 4.75571, lngMax: 5.02643},
+        Barcelona: {latCenter: 41.3874, lngCenter: 2.1686,
+            latMin: 41.352608, latMax: 41.45956, lngMin: 2.09159, lngMax: 2.22771},
+        Berlin: {latCenter: 52.5200, lngCenter: 13.4050,
+            latMin: 52.36904, latMax: 52.65611, lngMin: 13.09808, lngMax: 13.72139},
+        London: {latCenter: 51.5072, lngCenter: -0.118092,
+            latMin: 51.295937, latMax: 51.6811419, lngMin: -0.4978, lngMax: 0.28857},
+        Paris: {latCenter: 48.8566, lngCenter: 2.3522,
+            latMin: 48.81608, latMax: 48.90167, lngMin: 2.22843, lngMax: 2.46712},
+        Rome: {latCenter: 41.9028, lngCenter: 12.4964,
+            latMin: 41.65701, latMax: 42.1216, lngMin: 12.25167, lngMax: 12.79247},
+      };
+
+    useEffect(() => {
+        if (city) {
+          const { latCenter, lngCenter, latMin, latMax, lngMin, lngMax } = cityCoordinates[city];
+          initMap(latCenter, lngCenter, latMin, latMax, lngMin, lngMax);
+        }
+      }, [city]);
 
     useEffect(() => {
         fetch(`http://${config.server_host}:${config.server_port}/best_airbnb`)
@@ -33,21 +52,57 @@ export default function SongsPage() {
           });
       }, []);
 
+
+    function initMap(latCenter, lngCenter, latMin, latMax, lngMin, lngMax) {
+        var bounds = new google.maps.LatLngBounds(
+          new google.maps.LatLng(latMin - 0.001, lngMin - 0.001), 
+          new google.maps.LatLng(latMax + 0.001, lngMax + 0.001)
+        );
+    
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 14,
+          center: {lat: latCenter, lng: lngCenter},
+          draggable: true,
+          restriction: {
+            latLngBounds: bounds,
+            strictBounds: false
+          }
+        });
+    
+        map.setOptions({ minZoom: 12, maxZoom: 20 });
+        map.addListener('click', function(event) {
+            const lat = event.latLng.lat();
+            const lng = event.latLng.lng();
+            setLat(lat);
+            setLng(lng);
+            console.log("Lat: " + lat + ", Lng: " + lng);
+        });
+        map.setOptions({ minZoom: 12, maxZoom: 20 });
+  }
+
     const search = () => {
+        // console.log("numPeople: ", numPeople);
+        // console.log("nights: ", nights);
+        // console.log("city: ", city);
+        // console.log("minPrice: ", price[0]);
+        // console.log("maxPrice: ", price[1]);
+        // console.log("lat: ", lat);
+        // console.log("lng: ", lng);
         fetch(`http://${config.server_host}:${config.server_port}/airbnbs?numPeople=${numPeople}` +
             `&nights=${nights}` +
             `&city=${city}` +
             `&minPrice=${price[0]}` +
-            `&maxPrice=${price[1]}`
+            `&maxPrice=${price[1]}` +
+            `&lat=${lat}` +
+            `&lng=${lng}`
         )
             .then(res => res.json())
             .then(resJson => {
-                // DataGrid expects an array of objects with a unique id.
-                // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
                 const airbnbsWithName = resJson.map((airbnb) => ({ id: airbnb.name, ...airbnb }));
                 setData(airbnbsWithName);
-            });
+              });
     }
+    
 
     // This defines the columns of the table of songs used by the DataGrid component.
     // The format of the columns array and the DataGrid component itself is very similar to our
@@ -85,18 +140,23 @@ export default function SongsPage() {
                 </Grid>
             </Grid>
 
+            <Grid item xs={12} sm={4}>
+            <div id="map" style={{ height: '500px'}}></div>
+            </Grid>
+
             <h4>City:</h4>
             <Grid container spacing={6}>
 
                 <Grid item xs={8}>
-                    <select value={city} onChange={(e) => setCity(e.target.value)} className='dropdown'>
-                        <option city="amsterdam">Pick a city from the dropdown</option>
-                        <option city="amsterdam">Amsterdam</option>
-                        <option city="barcelona">Barcelona</option>
-                        <option city="berlin">Berlin</option>
-                        <option city="london">London</option>
-                        <option city="paris">Paris</option>
-                        <option city="rome">Rome</option>
+                    <select value={city} onChange={(e) => {setCity(e.target.value); setLat(cityCoordinates[e.target.value].latCenter);
+                    setLng(cityCoordinates[e.target.value].lngCenter)}} className='dropdown'>
+                        <option value="Amsterdam">Pick a city from the dropdown</option>
+                        <option value="Amsterdam">Amsterdam</option>
+                        <option value="Barcelona">Barcelona</option>
+                        <option value="Berlin">Berlin</option>
+                        <option value="London">London</option>
+                        <option value="Paris">Paris</option>
+                        <option value="Rome">Rome</option>
                     </select>
                 </Grid>
             </Grid>
