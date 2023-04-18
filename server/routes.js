@@ -140,16 +140,17 @@ const vegetarian = async function (req, res) {
   });
 }
 
-// GET /nearby_att
-const nearby_att = async function (req, res) {
-  // assumes we pass in location (rather than/in addition to name)
+// GET /nearby_attr
+const nearby_attr = async function (req, res) {
   const lng = req.query.lng ;
   const lat = req.query.lat ;
+  const city = req.query.city ;
+
 
   connection.query(`
-  SELECT name, subcategory, picture_url, lat, lng
+  SELECT A.name, A.subcategory, S.picture_url, A.lat, A.lng
   FROM Attractions A JOIN Subcategory S ON A.subcategory = S.name
-  WHERE location = user.city 
+  WHERE location = '${city}'
   ORDER BY MIN(SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)))
   LIMIT 10
   `, (err, data) => {
@@ -165,7 +166,6 @@ const nearby_att = async function (req, res) {
 
 // GET /nearby_rest
 const nearby_rest = async function (req, res) {
-  // assumes we pass in location (rather than/in addition to name)
   const lng = req.query.lng;
   const lat = req.query.lat;
 
@@ -312,7 +312,7 @@ const airbnbs = async function (req, res) {
 
 // GET /airbnbs/:bnb_name
 const bnb = async function (req, res) {
-  // assumes we have name and not location
+
   const bnb_name = req.params.bnb_name;
 
   connection.query(`
@@ -751,7 +751,7 @@ const friends = async function (req, res) {
     random_rest,
     pizza,
     vegetarian,
-    nearby_att,
+    nearby_attr,
     attractions,
     random_attr,
     museums,
