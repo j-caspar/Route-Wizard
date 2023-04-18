@@ -6,23 +6,40 @@ import './pages.css';
 import AirbnbCard from '../components/AirbnbCard';
 import { formatDuration } from '../helpers/formatter';
 const config = require('../config.json');
+const google=window.google
 
 export default function SongsPage() {
     const [pageSize, setPageSize] = useState(10);
     const [data, setData] = useState([]);
-    const [selectedSongId, setSelectedSongId] = useState(null);
     const [selectedAirbnbName, setSelectedAirbnbName] = useState(null);
-    const [city, setCity] = useState(null);
-
+    const [city, setCity] = useState('amsterdam');
     const [numPeople, setNumPeople] = useState([0, 99]);
     const [nights, setNights] = useState([0, 365]);
     const [price, setPrice] = useState([0, 1000]);
-    const [duration, setDuration] = useState([60, 660]);
-    const [plays, setPlays] = useState([0, 1100000000]);
-    const [danceability, setDanceability] = useState([0, 1]);
-    const [energy, setEnergy] = useState([0, 1]);
-    const [valence, setValence] = useState([0, 1]);
-    const [explicit, setExplicit] = useState(false);
+
+    const cityCoordinates = {
+        amsterdam: {latCenter: 52.3676, lngCenter: 4.9041,
+            latMin: 52.29034, latMax: 52.42512, lngMin: 4.75571, lngMax: 5.02643},
+        barcelona: {latCenter: 41.3874, lngCenter: 2.1686,
+            latMin: 41.352608, latMax: 41.45956, lngMin: 2.09159, lngMax: 2.22771},
+        berlin: {latCenter: 52.5200, lngCenter: 13.4050,
+            latMin: 52.36904, latMax: 52.65611, lngMin: 13.09808, lngMax: 13.72139},
+        london: {latCenter: 51.5072, lngCenter: -0.118092,
+            latMin: 51.295937, latMax: 51.6811419, lngMin: -0.4978, lngMax: 0.28857},
+        paris: {latCenter: 48.8566, lngCenter: 2.3522,
+            latMin: 48.81608, latMax: 48.90167, lngMin: 2.22843, lngMax: 2.46712},
+        rome: {latCenter: 41.9028, lngCenter: 12.4964,
+            latMin: 41.65701, latMax: 42.1216, lngMin: 12.25167, lngMax: 12.79247},
+      };
+
+    useEffect(() => {
+        console.log('city:', city);
+        if (city) {
+        console.log('here');
+          const { latCenter, lngCenter, latMin, latMax, lngMin, lngMax } = cityCoordinates[city];
+          initMap(latCenter, lngCenter, latMin, latMax, lngMin, lngMax);
+        }
+      }, [city]);
 
     useEffect(() => {
         fetch(`http://${config.server_host}:${config.server_port}/best_airbnb`)
@@ -32,6 +49,35 @@ export default function SongsPage() {
             setData(airbnbsWithName);
           });
       }, []);
+
+
+    function initMap(latCenter, lngCenter, latMin, latMax, lngMin, lngMax) {
+        var bounds = new google.maps.LatLngBounds(
+          new google.maps.LatLng(latMin - 0.001, lngMin - 0.001), 
+          new google.maps.LatLng(latMax + 0.001, lngMax + 0.001)
+        );
+    
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 14,
+          center: {lat: latCenter, lng: lngCenter},
+          draggable: true,
+          restriction: {
+            latLngBounds: bounds,
+            strictBounds: false
+          }
+        });
+    
+        map.setOptions({ minZoom: 12, maxZoom: 20 });
+        map.addListener('click', function(event) {
+          var lat = event.latLng.lat();
+          var lng = event.latLng.lng();
+        });
+        map.setOptions({ minZoom: 12, maxZoom: 20 });
+        map.addListener('click', function(event) {
+        var lat = event.latLng.lat();
+        var lng = event.latLng.lng();
+    });
+  }
 
     const search = () => {
         fetch(`http://${config.server_host}:${config.server_port}/airbnbs?numPeople=${numPeople}` +
@@ -48,6 +94,8 @@ export default function SongsPage() {
                 setData(airbnbsWithName);
             });
     }
+
+    
 
     // This defines the columns of the table of songs used by the DataGrid component.
     // The format of the columns array and the DataGrid component itself is very similar to our
@@ -85,18 +133,22 @@ export default function SongsPage() {
                 </Grid>
             </Grid>
 
+            <Grid item xs={12} sm={4}>
+            <div id="map" style={{ height: '500px' }}></div>
+            </Grid>
+
             <h4>City:</h4>
             <Grid container spacing={6}>
 
                 <Grid item xs={8}>
                     <select value={city} onChange={(e) => setCity(e.target.value)} className='dropdown'>
-                        <option city="amsterdam">Pick a city from the dropdown</option>
-                        <option city="amsterdam">Amsterdam</option>
-                        <option city="barcelona">Barcelona</option>
-                        <option city="berlin">Berlin</option>
-                        <option city="london">London</option>
-                        <option city="paris">Paris</option>
-                        <option city="rome">Rome</option>
+                        <option value="amsterdam">Pick a city from the dropdown</option>
+                        <option value="amsterdam">Amsterdam</option>
+                        <option value="barcelona">Barcelona</option>
+                        <option value="berlin">Berlin</option>
+                        <option value="london">London</option>
+                        <option value="paris">Paris</option>
+                        <option value="rome">Rome</option>
                     </select>
                 </Grid>
             </Grid>
