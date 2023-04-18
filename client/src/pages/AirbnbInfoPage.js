@@ -46,32 +46,31 @@ export default function AlbumInfoPage() {
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/airbnbs/${bnb_name}`)
       .then(res => res.json())
-      .then(resJson => setAirbnbData(resJson[0]));
-
-        console.log("lat: ", airbnbData.lat);
-        console.log("lng: ", airbnbData.lng);
-        console.log("location: ", airbnbData.location);
-
-
-      fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_attr?lng=${airbnbData.lng}` +
-        `&lat=${airbnbData.lat}` + `&city=${airbnbData.location}`
-    )
-        .then(res => res.json())
-        .then(resJson => {
-          const attractions = resJson.map((attr) => ({ id: attr.name, ...attr }));
-          setNearbyAttractions(attractions);
-      });
-
-      fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_rest?lng=${airbnbData.lng}` +
-        `&lat=${airbnbData.lat}`
-    )
-        .then(res => res.json())
-        .then(resJson => {
+      .then(resJson => {
+        setAirbnbData(resJson[0]);
+        console.log("lat: ", resJson[0].lat);
+        console.log("lng: ", resJson[0].lng);
+        console.log("location: ", resJson[0].location);
+  
+        fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_attr?lng=${resJson[0].lng}` +
+          `&lat=${resJson[0].lat}` + `&location=${resJson[0].location}`
+        )
+          .then(res => res.json())
+          .then(resJson => {
+            console.log(resJson); // Log the resJson variable to the console
+            const attractions = resJson.map((attr) => ({ id: attr.name, ...attr }));
+            setNearbyAttractions(attractions);
+          });
+  
+        fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_rest?lng=${resJson[0].lng}` +
+          `&lat=${resJson[0].lat}`
+        )
+          .then(res => res.json())
+          .then(resJson => {
             const restaurants = resJson.map((rest) => ({ id: rest.name, ...rest }));
             setNearbyRestaurants(restaurants);
-        });
-
-
+          });
+      });
   }, []);
 
   useEffect(() => {
@@ -97,7 +96,7 @@ export default function AlbumInfoPage() {
       }
     });
     
-    var airbnbMarker = new google.maps.Marker({
+    new google.maps.Marker({
       position: new google.maps.LatLng(airbnbData.lat, airbnbData.lng),
       map: map,
         icon: {url: "https://maps.gstatic.com/mapfiles/place_api/icons/lodging-71.png",

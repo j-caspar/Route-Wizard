@@ -144,14 +144,11 @@ const vegetarian = async function (req, res) {
 const nearby_attr = async function (req, res) {
   const lng = req.query.lng ;
   const lat = req.query.lat ;
-  const city = req.query.city ;
-
+  const location = req.query.location ;
 
   connection.query(`
-  SELECT A.name, A.subcategory, S.picture_url, A.lat, A.lng
+  SELECT *
   FROM Attractions A JOIN Subcategory S ON A.subcategory = S.name
-  WHERE location = '${city}'
-  ORDER BY MIN(SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)))
   LIMIT 10
   `, (err, data) => {
     if (err || data.length === 0) {

@@ -82,7 +82,6 @@ export default function SongsPage() {
             setLat(lat);
             setLng(lng);
         });
-        map.setOptions({ minZoom: 12, maxZoom: 20 });
   }
 
     const search = () => {
