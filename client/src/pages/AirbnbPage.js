@@ -14,8 +14,8 @@ export default function SongsPage() {
     const [selectedAirbnbName, setSelectedAirbnbName] = useState(null);
     const [city, setCity] = useState(null);
 
-    const [numPeople, setNumPeople] = useState([0, 99]);
-    const [nights, setNights] = useState([0, 365]);
+    const [numPeople, setNumPeople] = useState([1]);
+    const [nights, setNights] = useState([1]);
     const [price, setPrice] = useState([0, 1000]);
     const [duration, setDuration] = useState([60, 660]);
     const [plays, setPlays] = useState([0, 1100000000]);

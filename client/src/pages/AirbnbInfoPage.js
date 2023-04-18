@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Container, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-
+import { DataGrid } from '@mui/x-data-grid';
 import AirbnbCard from '../components/AirbnbCard';
 import { formatDuration, formatReleaseDate } from '../helpers/formatter';
 const config = require('../config.json');
@@ -11,10 +11,15 @@ export const openInNewTab = (url) => {
   if (newWindow) newWindow.opener = null;
 };
 
+
+
 export default function AlbumInfoPage() {
   const { bnb_name } = useParams();
 
+  const [pageSize, setPageSize] = useState(10);
   const [airbnbData, setAirbnbData] = useState([{}]);
+  const [nearbyAttractions, setNearbyAttractions] = useState([{}]);
+  const [nearbyRestaurants, setNearbyRestaurants] = useState([{}]);
   const [songData, setSongData] = useState([{}]); // default should actually just be [], but empty object element added to avoid error in template code
   const [albumData, setAlbumData] = useState([]);
 
@@ -25,6 +30,26 @@ export default function AlbumInfoPage() {
     fetch(`http://${config.server_host}:${config.server_port}/airbnbs/${bnb_name}`)
       .then(res => res.json())
       .then(resJson => setAirbnbData(resJson[0]));
+
+      fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_attr?lng=${airbnbData.lng}` +
+        `&lat=${airbnbData.lat}`
+    )
+        .then(res => res.json())
+        .then(resJson => {
+          const attractions = resJson.map((attr) => ({ id: attr.name, ...attr }));
+          setNearbyAttractions(attractions);
+      });
+
+      fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_rest?lng=${airbnbData.lng}` +
+        `&lat=${airbnbData.lat}`
+    )
+        .then(res => res.json())
+        .then(resJson => {
+            const restaurants = resJson.map((rest) => ({ id: rest.name, ...rest }));
+            setNearbyRestaurants(restaurants);
+        });
+
+
   }, []);
 
   return (
@@ -60,6 +85,10 @@ export default function AlbumInfoPage() {
           This host is a superhost!
         </h2>
       }
+      <h2>Nearby Attractions:</h2>
+            
+      <h2>Nearby Restaurants:</h2>
+          
     </Container>
   );
 }
