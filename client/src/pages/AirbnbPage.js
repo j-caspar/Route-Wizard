@@ -12,30 +12,31 @@ export default function SongsPage() {
     const [pageSize, setPageSize] = useState(10);
     const [data, setData] = useState([]);
     const [selectedAirbnbName, setSelectedAirbnbName] = useState(null);
-    const [city, setCity] = useState('amsterdam');
+    const [city, setCity] = useState('Amsterdam');
     const [numPeople, setNumPeople] = useState([0, 99]);
     const [nights, setNights] = useState([0, 365]);
     const [price, setPrice] = useState([0, 1000]);
+    const [lat, setLat] = useState(52.3676);
+    const [lng, setLng] = useState(4.9041);
+
 
     const cityCoordinates = {
-        amsterdam: {latCenter: 52.3676, lngCenter: 4.9041,
+        Amsterdam: {latCenter: 52.3676, lngCenter: 4.9041,
             latMin: 52.29034, latMax: 52.42512, lngMin: 4.75571, lngMax: 5.02643},
-        barcelona: {latCenter: 41.3874, lngCenter: 2.1686,
+        Barcelona: {latCenter: 41.3874, lngCenter: 2.1686,
             latMin: 41.352608, latMax: 41.45956, lngMin: 2.09159, lngMax: 2.22771},
-        berlin: {latCenter: 52.5200, lngCenter: 13.4050,
+        Berlin: {latCenter: 52.5200, lngCenter: 13.4050,
             latMin: 52.36904, latMax: 52.65611, lngMin: 13.09808, lngMax: 13.72139},
-        london: {latCenter: 51.5072, lngCenter: -0.118092,
+        London: {latCenter: 51.5072, lngCenter: -0.118092,
             latMin: 51.295937, latMax: 51.6811419, lngMin: -0.4978, lngMax: 0.28857},
-        paris: {latCenter: 48.8566, lngCenter: 2.3522,
+        Paris: {latCenter: 48.8566, lngCenter: 2.3522,
             latMin: 48.81608, latMax: 48.90167, lngMin: 2.22843, lngMax: 2.46712},
-        rome: {latCenter: 41.9028, lngCenter: 12.4964,
+        Rome: {latCenter: 41.9028, lngCenter: 12.4964,
             latMin: 41.65701, latMax: 42.1216, lngMin: 12.25167, lngMax: 12.79247},
       };
 
     useEffect(() => {
-        console.log('city:', city);
         if (city) {
-        console.log('here');
           const { latCenter, lngCenter, latMin, latMax, lngMin, lngMax } = cityCoordinates[city];
           initMap(latCenter, lngCenter, latMin, latMax, lngMin, lngMax);
         }
@@ -69,14 +70,13 @@ export default function SongsPage() {
     
         map.setOptions({ minZoom: 12, maxZoom: 20 });
         map.addListener('click', function(event) {
-          var lat = event.latLng.lat();
-          var lng = event.latLng.lng();
+            const lat = event.latLng.lat();
+            const lng = event.latLng.lng();
+            setLat(lat);
+            setLng(lng);
+            console.log("Lat: " + lat + ", Lng: " + lng);
         });
         map.setOptions({ minZoom: 12, maxZoom: 20 });
-        map.addListener('click', function(event) {
-        var lat = event.latLng.lat();
-        var lng = event.latLng.lng();
-    });
   }
 
     const search = () => {
@@ -84,17 +84,16 @@ export default function SongsPage() {
             `&nights=${nights}` +
             `&city=${city}` +
             `&minPrice=${price[0]}` +
-            `&maxPrice=${price[1]}`
+            `&maxPrice=${price[1]}` +
+            `&lat=${lat}` +
+            `&lng=${lng}`
         )
             .then(res => res.json())
             .then(resJson => {
-                // DataGrid expects an array of objects with a unique id.
-                // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
                 const airbnbsWithName = resJson.map((airbnb) => ({ id: airbnb.name, ...airbnb }));
                 setData(airbnbsWithName);
-            });
+              });
     }
-
     
 
     // This defines the columns of the table of songs used by the DataGrid component.
@@ -134,21 +133,22 @@ export default function SongsPage() {
             </Grid>
 
             <Grid item xs={12} sm={4}>
-            <div id="map" style={{ height: '500px' }}></div>
+            <div id="map" style={{ height: '500px'}}></div>
             </Grid>
 
             <h4>City:</h4>
             <Grid container spacing={6}>
 
                 <Grid item xs={8}>
-                    <select value={city} onChange={(e) => setCity(e.target.value)} className='dropdown'>
-                        <option value="amsterdam">Pick a city from the dropdown</option>
-                        <option value="amsterdam">Amsterdam</option>
-                        <option value="barcelona">Barcelona</option>
-                        <option value="berlin">Berlin</option>
-                        <option value="london">London</option>
-                        <option value="paris">Paris</option>
-                        <option value="rome">Rome</option>
+                    <select value={city} onChange={(e) => {setCity(e.target.value); setLat(cityCoordinates[e.target.value].latCenter);
+                    setLng(cityCoordinates[e.target.value].lngCenter)}} className='dropdown'>
+                        <option value="Amsterdam">Pick a city from the dropdown</option>
+                        <option value="Amsterdam">Amsterdam</option>
+                        <option value="Barcelona">Barcelona</option>
+                        <option value="Berlin">Berlin</option>
+                        <option value="London">London</option>
+                        <option value="Paris">Paris</option>
+                        <option value="Rome">Rome</option>
                     </select>
                 </Grid>
             </Grid>
