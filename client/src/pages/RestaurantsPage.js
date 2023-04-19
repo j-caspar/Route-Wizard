@@ -11,7 +11,7 @@ export default function RestaurantsPage() {
     const [data, setData] = useState([]);
     const [data2, setData2] = useState([]);
     const [keyword, setKeyword] = useState('');
-    const [city, setCity] = useState('');
+    const [city, setCity] = useState('Amsterdam');
 
     useEffect(() => {
         fetch(`http://${config.server_host}:${config.server_port}/restaurants`)
@@ -85,20 +85,19 @@ export default function RestaurantsPage() {
             <Grid container spacing={6}>
                 <Grid item xs={8}>
                 <select value={city} onChange={(e) => {setCity(e.target.value)}} className='dropdown'>
-                    <option value="amsterdam">Pick a city from the dropdown</option>
-                        <option value="amsterdam">Amsterdam</option>
-                        <option value="barcelona">Barcelona</option>
-                        <option value="berlin">Berlin</option>
-                        <option value="london">London</option>
-                        <option value="paris">Paris</option>
-                        <option value="rome">Rome</option>
+                        <option value="Amsterdam">Amsterdam</option>
+                        <option value="Barcelona">Barcelona</option>
+                        <option value="Berlin">Berlin</option>
+                        <option value="London">London</option>
+                        <option value="Paris">Paris</option>
+                        <option value="Rome">Rome</option>
                     </select>
                 </Grid>
             </Grid>
 
 
 
-            <Button onClick={() => search()} style={{margin: 50, color: 'white', backgroundColor: 'gray', fontSize: '3rem', left: '50%', transform: 'translateX(-50%)' }}>
+            <Button onClick={() => search()} style={{margin: 50, color: 'white', backgroundColor: '#051c3b', fontSize: '3rem', left: '50%', transform: 'translateX(-50%)' }}>
                 SHOW ME RESTAURANTS
             </Button>
             <h2>Results</h2>

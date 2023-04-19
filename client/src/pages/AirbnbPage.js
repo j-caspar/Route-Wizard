@@ -14,9 +14,9 @@ export default function SongsPage() {
     const [selectedAirbnbName, setSelectedAirbnbName] = useState(null);
     const [city, setCity] = useState('Amsterdam');
 
-    const [numPeople, setNumPeople] = useState([1]);
-    const [nights, setNights] = useState([1]);
-    const [price, setPrice] = useState([0, 1000]);
+    const [numPeople, setNumPeople] = useState(1);
+    const [nights, setNights] = useState(1);
+    const [price, setPrice] = useState([20, 1000]);
     const [lat, setLat] = useState(52.3676);
     const [lng, setLng] = useState(4.9041);
 
@@ -123,65 +123,61 @@ export default function SongsPage() {
     return (
         <Container>
             {selectedAirbnbName && <AirbnbCard airbnbName={selectedAirbnbName} handleClose={() => setSelectedAirbnbName(null)} />}
-            <h2 className='centered-h2-rest'>Airbnbs</h2>
-                <h4>Number of Guests:</h4>
-                <Grid item xs={8}>
-                    <TextField label='#' value={numPeople} onChange={(e) => setNumPeople(e.target.value)} style={{ width: 70, height: 100 }} />
-                </Grid>
-
-            <h4>Number of nights:</h4>
-            <Grid container spacing={8}>
-
-                <Grid item xs={8}>
-                    <TextField label='#' value={nights} onChange={(e) => setNights(e.target.value)} style={{ width: 70, height: 100 }} />
-                </Grid>
+            <Grid container spacing={0}>
+            <Grid item xs={6}>
+                <h1>Airbnbs</h1>
+            </Grid>
+            <Grid item xs={6}>
+                <form action="/airbnb-friend">
+                    <button type="submit" style={{color: 'white', backgroundColor: '#051c3b', marginTop: 30, fontSize: '1rem', left: '50%', transform: 'translateX(-50%)', fontFamily: 'Alegreya'}} >Traveling with A Friend?</button>
+                </form>
+            </Grid>
+            <Grid item xs={4}>
+                <h4>Length of Stay</h4>
+                <TextField label='Number of nights (Ex: 2)' value={nights} onChange={(e) => setNights(e.target.value)} style={{ width: 300, height: 100}}/>
+            </Grid>
+             <Grid item xs={4}>
+                <h4>Number of Guests</h4>
+                <TextField label='Number of guests (Ex: 1)' value={numPeople} onChange={(e) => setNumPeople(e.target.value)} style={{ width: 300, height: 100 }}/>
+            </Grid>
+            <Grid item xs={4}>
+            <h4>City</h4>
+                <select value={city} onChange={(e) => {setCity(e.target.value); setLat(cityCoordinates[e.target.value].latCenter);
+                setLng(cityCoordinates[e.target.value].lngCenter)}} className='dropdown'>
+                    <option value="Amsterdam">Amsterdam</option>
+                    <option value="Barcelona">Barcelona</option>
+                    <option value="Berlin">Berlin</option>
+                    <option value="London">London</option>
+                    <option value="Paris">Paris</option>
+                    <option value="Rome">Rome</option>
+                </select>
             </Grid>
 
-            <Grid item xs={12} sm={4}>
-            <div id="map" style={{ height: '500px'}}></div>
-            </Grid>
-
-            <Grid item xs={12} sm={4}>
-                <div style={{ textAlign: "center" }}>
-                    <h5>Click on the map to set a desired location</h5>
+            <Grid item xs={12}>
+                <div id="map" style={{ height: '450px', textAlign: 'center'}}></div>
+                 <div style={{textAlign: 'center'}}>
+                <h4>Click on the map to set a desired location</h4>
                 </div>
             </Grid>
 
-            <h4>City:</h4>
-            <Grid container spacing={6}>
-
-                <Grid item xs={8}>
-                    <select value={city} onChange={(e) => {setCity(e.target.value); setLat(cityCoordinates[e.target.value].latCenter);
-                    setLng(cityCoordinates[e.target.value].lngCenter)}} className='dropdown'>
-                        <option value="Amsterdam">Amsterdam</option>
-                        <option value="Barcelona">Barcelona</option>
-                        <option value="Berlin">Berlin</option>
-                        <option value="London">London</option>
-                        <option value="Paris">Paris</option>
-                        <option value="Rome">Rome</option>
-                    </select>
-                </Grid>
+            <Grid item xs={6}>
+            <h4>Price</h4>
+                <Slider
+                    value={price}
+                    min={20}
+                    max={1000}
+                    step={20}
+                    onChange={(e, newValue) => setPrice(newValue)}
+                    valueLabelDisplay='auto'
+                />
             </Grid>
-
-            <h4>Price:</h4>
-            <Grid container spacing={6}>
-                <Grid item xs={4}>
-                    <Slider
-                        value={price}
-                        min={0}
-                        max={1000}
-                        step={10}
-                        onChange={(e, newValue) => setPrice(newValue)}
-                        valueLabelDisplay='auto'
-                    />
-                </Grid>
+            <Grid item xs={6}>
+                <Button onClick={() => search()} style={{ margin: 50, color: 'white', backgroundColor: '#051c3b', fontSize: '2rem', left: '50%', transform: 'translateX(-50%)' }}>
+                    Show Me Airbnbs
+                </Button>
             </Grid>
+        </Grid>
 
-
-
-            <Button onClick={() => search()} style={{ margin: 50, color: 'white', backgroundColor: 'gray', fontSize: '3rem', left: '50%', transform: 'translateX(-50%)' }}>
-                SHOW ME AIRBNBS
-            </Button>
             <h2>Results</h2>
             {/* Notice how similar the DataGrid component is to our LazyTable! What are the differences? */}
             <DataGrid

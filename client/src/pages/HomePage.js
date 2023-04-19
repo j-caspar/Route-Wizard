@@ -26,9 +26,8 @@ export default function AlbumsPage() {
   return (
     // TODO (TASK 22): replace the empty object {} in the Container's style property with flexFormat. Observe the change to the Albums page.
     // TODO (TASK 22): then uncomment the code to display the cover image and once again observe the change, i.e. what happens to the layout now that each album card has a fixed width?
-    <Container style={{ backgroundImage: `url(${world})`, backgroundSize: "cover"}}>
-      
-      <h2 className="centered-h2"> TIME TO TRAVEL:&nbsp; 
+<Container style={{ backgroundImage: `url(${world})`, backgroundSize: "cover"}}>      
+      <h2 className="centered-h2"> TIME TO TRAVEL...&nbsp; 
       </h2>
       <h4 className="centered-h2">What are you searching for?&nbsp;
       </h4>
@@ -41,15 +40,15 @@ export default function AlbumsPage() {
           className="left-panel"
           p={3}
           m={2}
-          style={{width: 300, height: 100, background: 'peachpuff', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
+          style={{width: 300, height: 100, background: 'LightBlue', borderRadius: '16px', border: '2px solid #000', textAlign: 'center', fontFamily: 'Arial'}}
         >
-          <h4><NavLink className='navColor' to={`/airbnbs`}>AIRBNBS</NavLink></h4>
+          <h4> <NavLink className='navColor' to={`/airbnbs`}>AIRBNBS</NavLink></h4>
          </Box>
       <Box
           className="middle-panel"
           p={3}
           m={2}
-          style={{ width: 300, height: 100, background: 'peachpuff', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
+          style={{ width: 300, height: 100, background: 'LightBlue', borderRadius: '16px', border: '2px solid #000', textAlign: 'center', fontFamily: 'Arial' }}
         >
           <h4><NavLink className='navColor' to={`/attractions`}>ATTRACTIONS</NavLink></h4>
          </Box>
@@ -57,7 +56,7 @@ export default function AlbumsPage() {
           className="right-panel"
           p={3}
           m={2}
-          style={{ width: 300, height: 100, background: 'peachpuff', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
+          style={{ width: 300, height: 100, background: 'LightBlue', borderRadius: '16px', border: '2px solid #000', textAlign: 'center', fontFamily: 'Arial'  }}
         >
           <h4><NavLink className='navColor' to={`/restaurants`}>RESTAURANTS</NavLink></h4>
          </Box>
@@ -72,7 +71,7 @@ export default function AlbumsPage() {
       <Box
           p={3}
           m={2}
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',width: 300, height: 100, background: 'peachpuff', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',width: 300, height: 100, background: 'LightBlue', borderRadius: '16px', border: '2px solid #000', textAlign: 'center' }}
         >
           <h4><NavLink className='navColor' to={`/itinerary`}>BUILD AN ITINERARY</NavLink></h4>
          </Box>

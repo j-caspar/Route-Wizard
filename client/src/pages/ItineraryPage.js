@@ -100,19 +100,18 @@ export default function SongsPage() {
             style={{transform: 'translateY(170%)' }}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={5}>
           <h4>City</h4>
           <select value={city} onChange={handleChange} className='dropdown' style={{ width: 300, height: 50 }}>
-          <option value="amsterdam">Pick a city from the dropdown</option>
-            <option value="amsterdam">Amsterdam</option>
-            <option value="barcelona">Barcelona</option>
-            <option value="berlin">Berlin</option>
-            <option value="london">London</option>
-            <option value="paris">Paris</option>
-            <option value="rome">Rome</option>
+            <option value="Amsterdam">Amsterdam</option>
+            <option value="Barcelona">Barcelona</option>
+            <option value="Berlin">Berlin</option>
+            <option value="London">London</option>
+            <option value="Paris">Paris</option>
+            <option value="Rome">Rome</option>
           </select>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={5}>
           <h4>Price</h4>
           <Slider
             value={price}
@@ -123,12 +122,16 @@ export default function SongsPage() {
             valueLabelDisplay='auto'
           />
         </Grid>
+        <Grid item xs={2} style={{ marginTop: 50 }}>
+
+          <Button onClick={() => search() } style={{color: 'white', backgroundColor: '#051c3b', fontSize: '2rem', left: '50%', transform: 'translateX(-50%)' }}>
+            BUILD
+        </Button>
+       </Grid>
+
 
       </Grid>
 
-      <Button onClick={() => search() } style={{color: 'white', backgroundColor: 'gray', fontSize: '3rem', left: '50%', transform: 'translateX(-50%)' }}>
-        BUILD
-      </Button>
       <h2>Results</h2>
       {/* Notice how similar the DataGrid component is to our LazyTable! What are the differences? */}
       <DataGrid

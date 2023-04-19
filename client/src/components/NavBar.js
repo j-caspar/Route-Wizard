@@ -11,7 +11,7 @@ const NavText = ({ href, text, isMain }) => {
       noWrap
       style={{
         marginRight: '80px',
-        fontFamily: 'Candara',
+        fontFamily: 'Alegreya',
         fontWeight: 700,
         letterSpacing: '.3rem',
       }}
@@ -34,7 +34,7 @@ const NavText = ({ href, text, isMain }) => {
 // props to how it changes the look of the component.
 export default function NavBar() {
   return (
-    <AppBar style={{backgroundColor: 'sandybrown', color: 'white'}} position='static'>
+    <AppBar style={{backgroundColor: '#051c3b', color: 'white'}} position='static'>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           <NavText href='/' text='HOME' isMain />

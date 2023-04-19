@@ -436,10 +436,10 @@ const friends = async function (req, res) {
 
   connection.query(`
 
-  SELECT A.name, A.picture_url, A.price, A.listing_url, A.review_score, A.num_reviews, A.neighborhood,
-    B.name, B.picture_url, B.price, B.listing_url, B.review_score, B.num_reviews, B.neighborhood,
+  SELECT A.name as name, A.picture_url as picture_url, A.price as price, A.listing_url as listing_url, A.review_score as review_score, A.num_reviews as num_reviews, A.neighborhood as neighborhood,
+    B.name as bname, B.picture_url as bpicture_url, B.price as bprice, B.listing_url as blisting_url, B.review_score as breview_score, B.num_reviews as bnum_reviews, B.neighborhood as bneighborhood,
     SQRT((A.lat - B.lat) * (A.lat - B.lat) + (A.lng - B.lng) * (A.lng - B.lng)) * 111.139 AS Distance
-  FROM accommodations A JOIN accommodations B ON A.location = B.location
+  FROM accommodations A JOIN accommodations B ON A.location = B.location AND A.name < B.name
   WHERE ${A_min_nights} >= A.min_nights AND ${B_min_nights} >= B.min_nights
   AND ${A_min_price} <= A.price AND ${A_max_price} >= A.price AND ${B_min_price} <= B.price AND ${B_max_price} >= B.price
   AND ${A_num_people} < A.num_accommodates AND ${B_num_people} < B.num_accommodates AND A.location = '${city}'  AND B.location = '${city}'
@@ -780,5 +780,5 @@ const friends = async function (req, res) {
     friends,
     nearby_rest,
     airbnbs,
-    bnb
+    bnb,
   }

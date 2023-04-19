@@ -1,7 +1,8 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link} from "react-router-dom";
 import { CssBaseline, ThemeProvider } from '@mui/material'
-import { indigo, amber } from '@mui/material/colors'
+import { indigo, amber, lightBlue } from '@mui/material/colors'
 import { createTheme } from "@mui/material/styles";
+
 
 import NavBar from './components/NavBar';
 import HomePage from './pages/HomePage';
@@ -10,13 +11,15 @@ import RestaurantsPage from './pages/RestaurantsPage';
 import AttractionsPage from './pages/AttractionsPage';
 import AirbnbPage from './pages/AirbnbPage';
 import AirbnbInfoPage from './pages/AirbnbInfoPage';
+import AirbnbFriendPage from './pages/AirbnbFriend';
+
 
 // createTheme enables you to customize the look and feel of your app past the default
 // in this case, we only change the color scheme
 export const theme = createTheme({
   palette: {
     primary: indigo,
-    secondary: amber,
+    secondary: lightBlue,
   },
 });
 
@@ -37,6 +40,7 @@ export default function App() {
           <Route path="/restaurants" element={<RestaurantsPage />} />
           <Route path="/attractions" element={<AttractionsPage />} />
           <Route path="/airbnbs" element={<AirbnbPage />} />
+          <Route path="/airbnb-friend" element={<AirbnbFriendPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
