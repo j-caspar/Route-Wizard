@@ -97,7 +97,7 @@ export default function RestaurantsPage() {
 
 
 
-            <Button onClick={() => search()} style={{margin: 50, color: 'white', backgroundColor: '#051c3b', fontSize: '3rem', left: '50%', transform: 'translateX(-50%)' }}>
+            <Button onClick={() => search()} style={{margin: 50, color: 'white', backgroundColor: '#051c3b', fontSize: '2rem', left: '50%', transform: 'translateX(-50%)' }}>
                 SHOW ME RESTAURANTS
             </Button>
             <h2>Results</h2>

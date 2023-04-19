@@ -109,20 +109,19 @@ export default function SongsPage() {
 
                 <Grid item xs={8}>
                     <select value={value} onChange={handleChange} className='dropdown'>
-                    <option value="amsterdam">Pick a city from the dropdown</option>
-                        <option value="amsterdam">Amsterdam</option>
-                        <option value="barcelona">Barcelona</option>
-                        <option value="berlin">Berlin</option>
-                        <option value="london">London</option>
-                        <option value="paris">Paris</option>
-                        <option value="rome">Rome</option>
+                        <option value="Amsterdam">Amsterdam</option>
+                        <option value="Barcelona">Barcelona</option>
+                        <option value="Berlin">Berlin</option>
+                        <option value="London">London</option>
+                        <option value="Paris">Paris</option>
+                        <option value="Rome">Rome</option>
                     </select>
                 </Grid>
             </Grid>
 
 
 
-            <Button onClick={() => search()} style={{margin: 50, color: 'white', backgroundColor: 'gray', fontSize: '3rem', left: '50%', transform: 'translateX(-50%)' }}>
+            <Button onClick={() => search()} style={{margin: 50, color: 'white', backgroundColor: 'gray', fontSize: '2rem', left: '50%', transform: 'translateX(-50%)' }}>
                 SHOW ME ATTRACTIONS
             </Button>
             <h2>Results</h2>
