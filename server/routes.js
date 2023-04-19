@@ -64,9 +64,9 @@ const restaurants = async function (req, res) {
   const offset = pageSize * (page - 1);
 
   connection.query(`
-	SELECT R.name, R.location, R.subcategory, S.image
+	SELECT DISTINCT(R.name), R.location, R.subcategory, S.image
 	FROM restaurants R JOIN subcategory S ON R.subcategory = S.name
-  WHERE R.name LIKE '%${keyword}%' AND R.location LIKE '%${city}%' AND R.subcategory LIKE '%${keyword}%'
+  WHERE R.name LIKE '%${keyword}%' OR R.subcategory LIKE '%${keyword}%' AND R.location LIKE '%${city}%' AND R.subcategory LIKE '%${keyword}%'
   `, (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
@@ -85,7 +85,7 @@ const random_rest = async function (req, res) {
   connection.query(`
 	SELECT R.name, R.subcategory, S.image
   FROM Restaurants R JOIN subcategory S ON R.subcategory = S.name
-  WHERE location = '${city}'
+  WHERE location LIKE '${city}'
   ORDER BY RAND() LIMIT 10
   `, (err, data) => {
     if (err || data.length === 0) {
@@ -103,14 +103,14 @@ const pizza = async function (req, res) {
   const city = req.query.city || 'Amsterdam';
 
   connection.query(`
-  SELECT R.name, R.subcategory, S.picture_url
+  SELECT R.name, S.picture_url
   FROM restaurants JOIN subcategory S ON R.subcategory = S.name
-  WHERE (name LIKE '%pizza%' AND location = '${city}'
+  WHERE (R.name LIKE '%pizza%') AND location LIKE '${city}'
   ORDER BY RAND() LIMIT 10
   `, (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
-      res.json({});
+      res.json([]);
     } else {
       console.log(data);
       res.json(data);

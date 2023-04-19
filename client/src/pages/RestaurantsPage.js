@@ -9,10 +9,9 @@ const config = require('../config.json');
 export default function RestaurantsPage() {
     const [pageSize, setPageSize] = useState(10);
     const [data, setData] = useState([]);
+    const [data2, setData2] = useState([]);
     const [keyword, setKeyword] = useState('');
-    const [city, setCity] = useState('Amsterdam');
-
-    const [value, setValue] = useState('fruit');
+    const [city, setCity] = useState('');
 
     useEffect(() => {
         fetch(`http://${config.server_host}:${config.server_port}/restaurants`)
@@ -36,6 +35,18 @@ export default function RestaurantsPage() {
                 setData(data);
             });
     }
+
+    useEffect(() => {
+        fetch(`http://${config.server_host}:${config.server_port}/pizza?city=${city}`
+        )
+            .then(res => res.json())
+            .then(resJson => {
+                // DataGrid expects an array of objects with a unique id.
+                // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
+                const data2 = resJson.map((pizzaRest) => ({ id: pizzaRest.name, img: pizzaRest.picture_url, ...pizzaRest}));
+                setData2(data2);
+            });
+    }, []);
     
 
     // This defines the columns of the table of songs used by the DataGrid component.
@@ -46,6 +57,11 @@ export default function RestaurantsPage() {
         {field: 'name', headerName: 'Name', width: 400},
         { field: 'subcategory', headerName: 'Subcategory', width: 300},
         { field: 'location', headerName: 'City', width: 300},
+    ]
+
+    const columns2 = [
+        { field: 'name', headerName: 'Name', width: 400},
+        { field: 'picture_url', headerName: 'Image', width: 300},
     ]
 
     // This component makes uses of the Grid component from MUI (https://mui.com/material-ui/react-grid/).
@@ -86,7 +102,6 @@ export default function RestaurantsPage() {
                 SHOW ME RESTAURANTS
             </Button>
             <h2>Results</h2>
-            {/* Notice how similar the DataGrid component is to our LazyTable! What are the differences? */}
             <DataGrid
                 rows={data}
                 columns={columns}
@@ -95,6 +110,24 @@ export default function RestaurantsPage() {
                 onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                 autoHeight
             />
+
+            <h2>Hungry for pizza? Check these out.</h2>
+            <DataGrid
+                rows={data2}
+                columns={columns2}
+                pageSize={pageSize}
+                rowsPerPageOptions={[5, 10, 25]}
+                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                autoHeight
+            />
+            
+
+            
+
+
+
         </Container>
+        
+        
     );
 }
