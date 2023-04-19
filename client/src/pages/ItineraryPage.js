@@ -7,18 +7,9 @@ import AirbnbCard from '../components/AirbnbCard';
 import { formatDuration } from '../helpers/formatter';
 const config = require('../config.json');
 
-export default function SongsPage() {
+export default function ItineraryPage() {
   const [pageSize, setPageSize] = useState(10);
   const [data, setData] = useState([]);
-  const [selectedSongId, setSelectedSongId] = useState(null);
-
-  // const [title, setTitle] = useState('');
-  // const [duration, setDuration] = useState([60, 660]);
-  // const [plays, setPlays] = useState([0, 1100000000]);
-  // const [danceability, setDanceability] = useState([0, 1]);
-  // const [energy, setEnergy] = useState([0, 1]);
-  // const [valence, setValence] = useState([0, 1]);
-  // const [explicit, setExplicit] = useState(false);
 
   const [family, setFamily] = useState(false);
   const [price, setPrice] = useState([20, 1000]);
@@ -30,11 +21,11 @@ export default function SongsPage() {
     }
 
   useEffect(() => {
-    fetch(`http://${config.server_host}:${config.server_port}/search_songs`)
+    fetch(`http://${config.server_host}:${config.server_port}/itinerary`)
       .then(res => res.json())
       .then(resJson => {
-        const songsWithId = resJson.map((song) => ({ id: song.song_id, ...song }));
-        setData(songsWithId);
+        const data = resJson.map((itinerary) => ({ id: itinerary.name, picture: itinerary.image, type: itinerary.type, ...itinerary }));
+        setData(data);
       });
   }, []);
 
@@ -50,8 +41,8 @@ export default function SongsPage() {
       .then(resJson => {
         // DataGrid expects an array of objects with a unique id.
         // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
-        const songsWithId = resJson.map((song) => ({ id: song.song_id, ...song }));
-        setData(songsWithId);
+        const data = resJson.map((itinerary) => ({ id: itinerary.name, picture: itinerary.image, type: itinerary.type, ...itinerary }));
+        setData(data);
       });
   }
 
@@ -60,16 +51,10 @@ export default function SongsPage() {
   // LazyTable component. The big difference is we provide all data to the DataGrid component
   // instead of loading only the data we need (which is necessary in order to be able to sort by column)
   const columns = [
-    { field: 'title', headerName: 'Title', width: 300, renderCell: (params) => (
-        <Link onClick={() => setSelectedSongId(params.row.song_id)}>{params.value}</Link>
-    ) },
-    { field: 'name', headerName: 'Name' },
-    { field: 'type', headerName: 'Type' },
-    { field: 'danceability', headerName: 'Danceability' },
-    { field: 'energy', headerName: 'Energy' },
-    { field: 'valence', headerName: 'Valence' },
-    { field: 'tempo', headerName: 'Tempo' },
-    { field: 'key_mode', headerName: 'Key' }
+    { field: 'name', headerName: 'Name', width: 300 },
+    { field: 'picture', headerName: 'Picture', width: 300},
+    { field: 'type', headerName: 'Type', width: 200 },
+    { field: 'subcategory', headerName: "Subcategory", width: 200}
   ]
 
   // This component makes uses of the Grid component from MUI (https://mui.com/material-ui/react-grid/).
@@ -79,9 +64,10 @@ export default function SongsPage() {
   // grid is 12 units wide and the xs attribute specifies how many units the grid item is. So if you want
   // two grid items of the same size on the same row, define two grid items with xs={6}. The Grid container
   // will automatically lay out all the grid items into rows based on their xs values.
+  //       {selectedSongId && <AirbnbCard songId={selectedSongId} handleClose={() => setSelectedSongId(null)} />}
+
   return (
     <Container>
-      {selectedSongId && <AirbnbCard songId={selectedSongId} handleClose={() => setSelectedSongId(null)} />}
       <h2>Build an itinerary</h2>
       <Grid container spacing={6}>
       
