@@ -121,7 +121,7 @@ export default function SongsPage() {
 
 
 
-            <Button onClick={() => search()} style={{margin: 50, color: 'white', backgroundColor: 'gray', fontSize: '2rem', left: '50%', transform: 'translateX(-50%)' }}>
+            <Button onClick={() => search()} style={{margin: 50, color: 'white', backgroundColor: '#051c3b', fontSize: '2rem', left: '50%', transform: 'translateX(-50%)' }}>
                 SHOW ME ATTRACTIONS
             </Button>
             <h2>Results</h2>

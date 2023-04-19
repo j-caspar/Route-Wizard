@@ -66,7 +66,7 @@ const restaurants = async function (req, res) {
   connection.query(`
 	SELECT DISTINCT(R.name), R.location, R.subcategory, S.image
 	FROM restaurants R JOIN subcategory S ON R.subcategory = S.name
-  WHERE R.name LIKE '%${keyword}%' OR R.subcategory LIKE '%${keyword}%' AND R.location LIKE '%${city}%' AND R.subcategory LIKE '%${keyword}%'
+  WHERE (R.name LIKE '%${keyword}%' OR R.subcategory LIKE '%${keyword}%') AND R.location LIKE '%${city}%'
   `, (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
@@ -104,8 +104,8 @@ const pizza = async function (req, res) {
 
   connection.query(`
   SELECT R.name, S.picture_url
-  FROM restaurants JOIN subcategory S ON R.subcategory = S.name
-  WHERE (R.name LIKE '%pizza%') AND location LIKE '${city}'
+  FROM restaurants R JOIN subcategory S ON R.subcategory = S.name
+  WHERE (R.name LIKE '%pizza%' OR R.subcategory LIKE '%Pizza Place%') AND location LIKE '${city}'
   ORDER BY RAND() LIMIT 10
   `, (err, data) => {
     if (err || data.length === 0) {
@@ -396,8 +396,8 @@ const itinerary = async function (req, res) {
   ORDER BY RAND()
   LIMIT ${days}
   ), breakfast AS (
-     SELECT R.name, lat, lng, NULL as image, 'breakfast' AS type, R.subcategory AS subcategory
-    FROM restaurants R
+     SELECT R.name, lat, lng, S.image as image, 'breakfast' AS type, R.subcategory AS subcategory
+    FROM restaurants R join subcategory S on R.subcategory=S.name
     WHERE location = '${city}' AND (R.subcategory = 'Bagel Shop' OR R.subcategory = 'Bakery'
      OR R.subcategory = 'Breakfast Spot' OR R.subcategory = 'Donut Shop' OR R.subcategory = 'Coffee Shop')
      ORDER BY RAND()

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Box, Button, Checkbox, Container, FormControlLabel, Grid, Link, Slider, TextField } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import './pages.css';
+import Avatar from '@mui/material/Avatar';
 
 import AirbnbCard from '../components/AirbnbCard';
 import { formatDuration } from '../helpers/formatter';
@@ -52,7 +53,7 @@ export default function ItineraryPage() {
   // instead of loading only the data we need (which is necessary in order to be able to sort by column)
   const columns = [
     { field: 'name', headerName: 'Name', width: 300 },
-    { field: 'picture', headerName: 'Picture', width: 300},
+    { field: 'image', headerName: 'Picture', width: 300, renderCell: (params) => <Avatar src={params.value} />},
     { field: 'type', headerName: 'Type', width: 200 },
     { field: 'subcategory', headerName: "Subcategory", width: 200}
   ]
