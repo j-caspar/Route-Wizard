@@ -57,11 +57,9 @@ const bestAirbnbs = async function (req, res) {
 const restaurants = async function (req, res) {
   const city = req.query.city || 'Amsterdam';
   const keyword = req.query.keyword || '';
-  const subcategory = req.query.subcategory || '';
 
   const page = req.query.page || 1;
   const pageSize = 10; // do not allow user to change page size; set to 10
-  const offset = pageSize * (page - 1);
 
   connection.query(`
 	SELECT DISTINCT(R.name), R.location, R.subcategory, S.image
@@ -217,22 +215,18 @@ const nearby_rest = async function (req, res) {
 const attractions = async function (req, res) {
   const city = req.query.city || 'Amsterdam';
   const keyword = req.query.keyword || '';
-  const subcategory = req.query.subcategory || '';
 
   const page = req.query.page || 1;
   const pageSize = 10; // do not allow user to change page size; set to 10
-  const offset = pageSize * (page - 1);
 
   connection.query(`
-	SELECT name, subcategory, img_url
-	FROM attractions
-	WHERE name LIKE '%${keyword}%' AND location = '${city}' AND subcategory = '${subcategory}'
-  LIMIT ${pageSize}
-  OFFSET ${offset}
+	SELECT DISTINCT(A.name), A.location, A.subcategory, S.image
+	FROM attractions A LEFT JOIN subcategory S ON A.subcategory = S.name
+	WHERE (A.name LIKE '%${keyword}%' OR A.subcategory LIKE '%${keyword}%') AND A.location LIKE '%${city}%'
   `, (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
-      res.json({});
+      res.json([]);
     } else {
       console.log(data);
       res.json(data);
@@ -245,9 +239,9 @@ const attractions = async function (req, res) {
     const city = req.query.city || 'Amsterdam';
 
     connection.query(`
-	SELECT A.name, A.subcategory, S.picture_url
+	SELECT A.name, A.subcategory, S.image
   FROM attractions A JOIN subcategory S ON A.subcategory = S.name
-  WHERE location = '${city}'
+  WHERE location LIKE '%${city}%'
   ORDER BY RAND() LIMIT 10
   `, (err, data) => {
       if (err || data.length === 0) {
@@ -265,14 +259,14 @@ const attractions = async function (req, res) {
     const city = req.query.city || 'Amsterdam';
 
     connection.query(`
-    SELECT A.name, A.subcategory, S.picture_url
-    FROM attractions A JOIN subcategory S ON A.subcategory = S.name
-    WHERE A.name LIKE '%Museum%' OR A.subcategory = 'Museum' AND A.location = '${city}'
-    ORDER BY RAND() LIMIT 10
+    SELECT A.name, S.image, A.location
+    FROM attractions A LEFT JOIN subcategory S ON A.subcategory = S.name
+    WHERE (A.name LIKE '%Museum%' OR A.subcategory = 'Museum') AND A.location LIKE '%${city}%'
+    ORDER BY RAND() LIMIT 5;
     `, (err, data) => {
       if (err || data.length === 0) {
         console.log(err);
-        res.json({});
+        res.json([]);
       } else {
         console.log(data);
         res.json(data);
@@ -285,15 +279,15 @@ const attractions = async function (req, res) {
     const city = req.query.city || 'Amsterdam';
 
     connection.query(`
-      SELECT A.name, A.subcategory, S.picture_url
-      FROM attractions A JOIN subcategory S ON A.subcategory = S.name
-      WHERE location = '${city}' AND
-      S.adult_only = true
-      LIMIT 10
+      SELECT A.name, S.image, A.location, A.subcategory
+      FROM attractions A LEFT JOIN subcategory S ON A.subcategory = S.name
+      WHERE A.location LIKE '%${city}%' AND
+      S.adult_only = true AND S.image IS NOT NULL
+      ORDER BY RAND() LIMIT 5;
       `, (err, data) => {
       if (err || data.length === 0) {
         console.log(err);
-        res.json({});
+        res.json([]);
       } else {
         console.log(data);
         res.json(data);

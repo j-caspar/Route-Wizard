@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Box, Button, Checkbox, Container, FormControlLabel, Grid, Link, Slider, TextField } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import './pages.css';
-import Avatar from '@mui/material/Avatar';
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
@@ -67,14 +66,10 @@ export default function RestaurantsPage() {
             .then(resJson => {
                 // DataGrid expects an array of objects with a unique id.
                 // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
-<<<<<<< HEAD
-                const data = resJson.map((restaurant) => ({ id: restaurant.name, city: restaurant.city, subcategory: restaurant.subcategory, ...restaurant }));
-=======
                 if (Object.keys(resJson).length === 0) {
                     setData([]);
                 } else {
                 const data = resJson.map((restaurant) => ({ id: restaurant.name, city: restaurant.city, subcategory: restaurant.subcategory, ...restaurant}));
->>>>>>> e84f0599bf2973879ccc8fb35e983c4c1d797123
                 setData(data);
             }
         });

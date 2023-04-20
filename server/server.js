@@ -21,8 +21,8 @@ app.get('/airbnbs/nearby_rest', routes.nearby_rest);
 app.get('/airbnbs/:bnb_name', routes.bnb);
 app.get('/attractions', routes.attractions);
 app.get('/random_attr', routes.random_attr);
-app.get('/museums', routes.museums);
-app.get('/adult_only', routes.adult_only);
+app.get('/attractions/museums', routes.museums);
+app.get('/attractions/adult_only', routes.adult_only);
 app.get('/itinerary', routes.itinerary);
 app.get('/travelwithfriend', routes.friends);
 
