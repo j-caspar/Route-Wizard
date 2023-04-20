@@ -106,7 +106,7 @@ const pizza = async function (req, res) {
   SELECT R.name, S.image, R.location
   FROM restaurants R LEFT JOIN subcategory S ON R.subcategory = S.name
   WHERE (R.name LIKE '%pizza%' OR R.subcategory LIKE '%Pizza Place%') AND R.location LIKE '${city}' AND S.image IS NOT NULL
-  ORDER BY RAND() LIMIT 10;
+  ORDER BY RAND() LIMIT 5;
   `, (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
@@ -126,7 +126,7 @@ const vegetarian = async function (req, res) {
   SELECT R.name, S.image, R.location
   FROM restaurants R LEFT JOIN subcategory S ON R.subcategory = S.name
   WHERE (R.name LIKE '%Veg%' OR R.subcategory = 'Vegetarian / Vegan Restaurant') AND R.location LIKE '${city}' AND S.image IS NOT NULL
-  ORDER BY RAND() LIMIT 10;
+  ORDER BY RAND() LIMIT 5;
   `, (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
