@@ -182,7 +182,7 @@ export default function AttractionsPage() {
                     ))}
                 </Grid>
 
-                <h2>21+? This is for you.</h2>
+                <h2>21+? We know the spots.</h2>
                 <Grid container spacing={2} direction="row" justifyContent="center" alignItems="stretch">
                     {data3.map((item, index) => (
                         <Grid item key={index} xs={12} sm={3} md={2} container direction="column" alignItems="center">
@@ -193,7 +193,7 @@ export default function AttractionsPage() {
                                 {item.name}
                             </Typography>
                             <Typography variant="body3" color="text.secondary" align="center">
-                                {item.subcategory}
+                                {item.subcategory} in {item.location}
                             </Typography>
                         </Grid>
                     ))}
