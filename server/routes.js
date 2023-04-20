@@ -365,38 +365,38 @@ const itinerary = async function (req, res) {
   connection.query(`
 
   WITH hotel AS ( 
-    SELECT name, lat, lng, picture_url as image, 'accommodation' AS type, 'airbnb' AS subcategory
+    SELECT name, lat, lng, picture_url as image, 'Accommodation' AS type, 'Airbnb' AS subcategory
     FROM accommodations
     WHERE  ${days} >= min_nights AND ${min_price} <= price AND ${max_price} >= price AND ${num_people} < num_accommodates AND location = '${city}' AND review_score IS NOT NULL
   GROUP BY name, picture_url, price, lat, lng, type
   ORDER BY MAX(exp(SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng))) * -3 * (LOG(num_reviews + 1) * 0.2) * (POWER(review_score, 3) / 150 )) LIMIT 1
   ), rest AS (
-    SELECT R.name, lat, lng, S.image as image, 'restaurant' AS type, R.subcategory AS subcategory
+    SELECT R.name, lat, lng, S.image as image, 'Restaurant' AS type, R.subcategory AS subcategory
     FROM restaurants R join subcategory S on R.subcategory=S.name
     WHERE location = '${city}' AND 
     (R.subcategory <> 'Bagel Shop' AND R.subcategory <> 'Bakery'
      AND R.subcategory <> 'Breakfast Spot' AND R.subcategory <> 'Donut Shop' AND R.subcategory <> 'Coffee Shop') AND
-  SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)) * 111.139 < 2
+  SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)) * 111.139 < 5
   ORDER BY RAND()
   LIMIT ${num_rest_att}
   ), attrac AS (
-    SELECT A.name, lat, lng, S.image as image, 'attraction' AS type, A.subcategory AS subcategory
+    SELECT A.name, lat, lng, S.image as image, 'Attraction' AS type, A.subcategory AS subcategory
     FROM attractions A join subcategory S on A.subcategory=S.name
     WHERE location = '${city}' AND (S.adult_only = false OR S.adult_only = ${adult_only}) AND
-  SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)) * 111.139 < 2
+  SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)) * 111.139 < 5
   ORDER BY RAND()
   LIMIT ${num_rest_att}
   ), nightlife AS (
-    SELECT B.name, lat, lng, S.image as image, 'nightlife' AS type, B.subcategory AS subcategory
+    SELECT B.name, lat, lng, S.image as image, 'Nightlife' AS type, B.subcategory AS subcategory
     FROM attractions B join subcategory S on B.subcategory = S.name
     WHERE B.location = '${city}' AND S.adult_only = ${adult_only} AND 
     (S.adult_only = true OR B.subcategory = 'Bowling Alley'
     OR B.subcategory = 'Harbor / Marina' OR B.subcategory = 'Movie Theater' OR B.subcategory = 'Theater') AND
-  SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)) * 111.139 < 2
+  SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)) * 111.139 < 5
   ORDER BY RAND()
   LIMIT ${days}
   ), breakfast AS (
-     SELECT R.name, lat, lng, S.image as image, 'breakfast' AS type, R.subcategory AS subcategory
+     SELECT R.name, lat, lng, S.image as image, 'Breakfast' AS type, R.subcategory AS subcategory
     FROM restaurants R join subcategory S on R.subcategory=S.name
     WHERE location = '${city}' AND (R.subcategory = 'Bagel Shop' OR R.subcategory = 'Bakery'
      OR R.subcategory = 'Breakfast Spot' OR R.subcategory = 'Donut Shop' OR R.subcategory = 'Coffee Shop')
