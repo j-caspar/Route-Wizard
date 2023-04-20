@@ -43,10 +43,14 @@ export default function SongsPage() {
         )
             .then(res => res.json())
             .then(resJson => {
+                if (Object.keys(resJson).length === 0) {
+                    setData([]);
+                } else {
                 const airbnbsWithName = resJson.map((airbnb) => ({ id: `${airbnb.name}-${airbnb.bname}`, ...airbnb }));
                 console.log(resJson);
                 setData(airbnbsWithName);
-              });
+              }
+            });
     }
     
 
