@@ -28,34 +28,42 @@ export default function AttractionsPage() {
         fetch(`http://${config.server_host}:${config.server_port}/attractions`)
             .then(res => res.json())
             .then(resJson => {
-                const data = resJson.map((attraction) => ({ id: attraction.name, city: attraction.city, subcategory: attraction.subcategory, ...attraction }));
-                setData(data);
-            });
-    }, []);
+                if (Object.keys(resJson).length === 0) {
+                    setData([]);
+                } else {
+                    const data = resJson.map((attraction) => ({ id: attraction.name, city: attraction.city, subcategory: attraction.subcategory, ...attraction }));
+                    setData(data);
+                }
+            })
+    });
 
     useEffect(() => {
         fetch(`http://${config.server_host}:${config.server_port}/attractions/museums`
         )
             .then(res => res.json())
             .then(resJson => {
-                // DataGrid expects an array of objects with a unique id.
-                // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
+                if (Object.keys(resJson).length === 0) {
+                    setData([]);
+                } else {
                 const data2 = resJson.map((museum) => ({ id: museum.name, image: museum.image, city: museum.city, ...museum }));
                 setData2(data2);
-            });
-    }, []);
+            }
+        })
+});
 
     useEffect(() => {
         fetch(`http://${config.server_host}:${config.server_port}/attractions/adult_only`
         )
             .then(res => res.json())
             .then(resJson => {
-                // DataGrid expects an array of objects with a unique id.
-                // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
+                if (Object.keys(resJson).length === 0) {
+                    setData([]);
+                } else {
                 const data3 = resJson.map((adult) => ({ id: adult.name, image: adult.image, city: adult.city, subcategory: adult.subcategory, ...adult }));
                 setData3(data3);
-            });
-    }, []);
+            }
+        })
+});
 
 
     const search = () => {
@@ -69,10 +77,10 @@ export default function AttractionsPage() {
                 if (Object.keys(resJson).length === 0) {
                     setData([]);
                 } else {
-                const data = resJson.map((attraction) => ({ id: attraction.name, city: attraction.city, subcategory: attraction.subcategory, ...attraction}));
-                setData(data);
-            }
-        });
+                    const data = resJson.map((attraction) => ({ id: attraction.name, city: attraction.city, subcategory: attraction.subcategory, ...attraction }));
+                    setData(data);
+                }
+            });
     }
 
     const filterMuseums = () => {
@@ -80,24 +88,30 @@ export default function AttractionsPage() {
         )
             .then(res => res.json())
             .then(resJson => {
-                // DataGrid expects an array of objects with a unique id.
-                // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
+                if (Object.keys(resJson).length === 0) {
+                    setData([]);
+                } else {
                 const data2 = resJson.map((museum) => ({ id: museum.name, image: museum.image, city: museum.city, ...museum }));
                 setData2(data2);
-            });
-    }
+            }
+        });
+}
 
     const filterAdult = () => {
         fetch(`http://${config.server_host}:${config.server_port}/attractions/adult_only?city=${city}`
         )
             .then(res => res.json())
             .then(resJson => {
+                if (Object.keys(resJson).length === 0) {
+                    setData([]);
+                } else {
                 // DataGrid expects an array of objects with a unique id.
                 // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
                 const data3 = resJson.map((adult) => ({ id: adult.name, image: adult.image, city: adult.city, subcategory: adult.subcategory, ...adult }));
                 setData3(data3);
-            });
-    }
+            }
+        });
+}
 
 
     // This defines the columns of the table of songs used by the DataGrid component.

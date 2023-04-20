@@ -28,10 +28,13 @@ export default function RestaurantsPage() {
         fetch(`http://${config.server_host}:${config.server_port}/restaurants`)
             .then(res => res.json())
             .then(resJson => {
+                if (Object.keys(resJson).length === 0) {
+                    setData([]);
+                } else {
                 const data = resJson.map((restaurant) => ({ id: restaurant.name, city: restaurant.city, subcategory: restaurant.subcategory, ...restaurant }));
                 setData(data);
-            });
-    }, []);
+            }   
+        })});
 
     useEffect(() => {
         fetch(`http://${config.server_host}:${config.server_port}/restaurants/pizza`
@@ -40,10 +43,13 @@ export default function RestaurantsPage() {
             .then(resJson => {
                 // DataGrid expects an array of objects with a unique id.
                 // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
-                const data2 = resJson.map((pizzaRest) => ({ id: pizzaRest.name, image: pizzaRest.image, city: pizzaRest.city, ...pizzaRest }));
-                setData2(data2);
-            });
-    }, []);
+                if (Object.keys(resJson).length === 0) {
+                    setData([]);
+                } else {
+                    const data2 = resJson.map((pizzaRest) => ({ id: pizzaRest.name, image: pizzaRest.image, city: pizzaRest.city, ...pizzaRest }));
+                    setData2(data2);
+                }   
+        })});
 
     useEffect(() => {
         fetch(`http://${config.server_host}:${config.server_port}/restaurants/vegetarian`
@@ -52,10 +58,13 @@ export default function RestaurantsPage() {
             .then(resJson => {
                 // DataGrid expects an array of objects with a unique id.
                 // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
+                if (Object.keys(resJson).length === 0) {
+                    setData([]);
+                } else {
                 const data3 = resJson.map((vegRest) => ({ id: vegRest.name, image: vegRest.image, city: vegRest.city, ...vegRest }));
                 setData3(data3);
-            });
-    }, []);
+                }   
+    })});
 
 
     const search = () => {
@@ -82,9 +91,13 @@ export default function RestaurantsPage() {
             .then(resJson => {
                 // DataGrid expects an array of objects with a unique id.
                 // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
+                if (Object.keys(resJson).length === 0) {
+                    setData([]);
+                } else {
                 const data2 = resJson.map((pizzaRest) => ({ id: pizzaRest.name, image: pizzaRest.image, city: pizzaRest.city, ...pizzaRest }));
                 setData2(data2);
-            });
+            }
+        });
     }
 
     const filterVeg = () => {
@@ -94,9 +107,13 @@ export default function RestaurantsPage() {
             .then(resJson => {
                 // DataGrid expects an array of objects with a unique id.
                 // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
+                if (Object.keys(resJson).length === 0) {
+                    setData([]);
+                } else {
                 const data3 = resJson.map((vegRest) => ({ id: vegRest.name, image: vegRest.image, city: vegRest.city, ...vegRest }));
                 setData3(data3);
-            });
+            }
+        });
     }
 
 
