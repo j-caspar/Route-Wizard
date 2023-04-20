@@ -28,42 +28,30 @@ export default function AttractionsPage() {
         fetch(`http://${config.server_host}:${config.server_port}/attractions`)
             .then(res => res.json())
             .then(resJson => {
-                if (Object.keys(resJson).length === 0) {
-                    setData([]);
-                } else {
                     const data = resJson.map((attraction) => ({ id: attraction.name, city: attraction.city, subcategory: attraction.subcategory, ...attraction }));
                     setData(data);
-                }
-            })
-    });
+                });
+            }, []);
 
     useEffect(() => {
         fetch(`http://${config.server_host}:${config.server_port}/attractions/museums`
         )
             .then(res => res.json())
             .then(resJson => {
-                if (Object.keys(resJson).length === 0) {
-                    setData([]);
-                } else {
                 const data2 = resJson.map((museum) => ({ id: museum.name, image: museum.image, city: museum.city, ...museum }));
                 setData2(data2);
-            }
-        })
-});
+            });
+        }, []);
 
     useEffect(() => {
         fetch(`http://${config.server_host}:${config.server_port}/attractions/adult_only`
         )
             .then(res => res.json())
             .then(resJson => {
-                if (Object.keys(resJson).length === 0) {
-                    setData([]);
-                } else {
                 const data3 = resJson.map((adult) => ({ id: adult.name, image: adult.image, city: adult.city, subcategory: adult.subcategory, ...adult }));
                 setData3(data3);
-            }
-        })
-});
+            });
+        }, []);
 
 
     const search = () => {
