@@ -85,6 +85,14 @@ export default function SongsPage() {
   }
 
     const search = () => {
+        console.log(numPeople);
+        console.log(nights);
+        console.log(city);
+        console.log(price[0]);
+        console.log(price[1]);
+        console.log(lat);
+        console.log(lng);
+
         fetch(`http://${config.server_host}:${config.server_port}/airbnbs?numPeople=${numPeople}` +
             `&nights=${nights}` +
             `&city=${city}` +
@@ -95,9 +103,16 @@ export default function SongsPage() {
         )
             .then(res => res.json())
             .then(resJson => {
-                const airbnbsWithName = resJson.map((airbnb) => ({ id: airbnb.name, ...airbnb }));
-                setData(airbnbsWithName);
-              });
+                console.log(resJson);
+                console.log(resJson.length);
+
+                if (Object.keys(resJson).length === 0) {
+                    setData([]);
+                } else {
+                    const airbnbsWithName = resJson.map((airbnb) => ({ id: airbnb.name, ...airbnb }));
+                    setData(airbnbsWithName);
+                }
+            });
     }
     
 

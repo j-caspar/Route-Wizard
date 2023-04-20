@@ -98,9 +98,13 @@ export default function ItineraryPage() {
       .then(resJson => {
         // DataGrid expects an array of objects with a unique id.
         // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
-        const data = resJson.map((itinerary) => ({ id: itinerary.name, picture: itinerary.image, type: itinerary.type, ...itinerary }));
-        setData(data);
-      });
+        if (Object.keys(resJson).length === 0) {
+          setData([]);
+        } else {
+          const data = resJson.map((itinerary) => ({ id: itinerary.name, picture: itinerary.image, type: itinerary.type, ...itinerary }));
+          setData(data);
+        }
+    });
   }
 
   // This defines the columns of the table of songs used by the DataGrid component.
@@ -126,7 +130,7 @@ export default function ItineraryPage() {
   return (
     <Container>
       <h1>Build an itinerary</h1>
-      <Grid container spacing={6}>
+      <Grid container spacing={5}>
       
         <Grid item xs={4}>
           <h4>Length of Stay</h4>
