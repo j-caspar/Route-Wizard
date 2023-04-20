@@ -73,17 +73,15 @@ export default function RestaurantsPage() {
     // will automatically lay out all the grid items into rows based on their xs values.
     return (
         <Container>
-            <h2 className='centered-h2-rest'>Restaurants</h2>
-            <h4>I'm looking for:</h4>
-            <Grid container spacing={6}>
+            <h1>Restaurants</h1>
+            <Grid container spacing={4}>
                 <Grid item xs={8}>
+                    <h4>I'm looking for:</h4>
                     <TextField label='Keyword Search' value={keyword} onChange={(e) => setKeyword(e.target.value)} style={{ width: 1000, height: 100 }} />
                 </Grid>
-            </Grid>
 
-            <h4>City:</h4>
-            <Grid container spacing={6}>
-                <Grid item xs={8}>
+            <Grid item xs={7}>
+                <h4>City:</h4>
                 <select value={city} onChange={(e) => {setCity(e.target.value)}} className='dropdown'>
                         <option value="Amsterdam">Amsterdam</option>
                         <option value="Barcelona">Barcelona</option>
@@ -92,14 +90,15 @@ export default function RestaurantsPage() {
                         <option value="Paris">Paris</option>
                         <option value="Rome">Rome</option>
                     </select>
-                </Grid>
             </Grid>
 
 
-
-            <Button onClick={() => search()} style={{margin: 50, color: 'white', backgroundColor: '#051c3b', fontSize: '2rem', left: '50%', transform: 'translateX(-50%)' }}>
-                SHOW ME RESTAURANTS
-            </Button>
+            <Grid item xs={5}>
+                <Button onClick={() => search()} style={{margin: 50, color: 'white', width: '100%', backgroundColor: '#051c3b', fontSize: '2rem', transform: 'translateX(-50%)' }}>
+                    SHOW ME RESTAURANTS
+                </Button>
+            </Grid>
+            </Grid>
             <h2>Results</h2>
             <DataGrid
                 rows={data}

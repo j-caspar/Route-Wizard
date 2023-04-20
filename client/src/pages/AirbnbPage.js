@@ -127,9 +127,9 @@ export default function SongsPage() {
             <Grid item xs={6}>
                 <h1>Airbnbs</h1>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} style={{ display: 'flex', justifyContent: 'right' }}>
                 <form action="/airbnb-friend">
-                    <button type="submit" style={{color: 'white', backgroundColor: '#051c3b', marginTop: 30, fontSize: '1rem', left: '50%', transform: 'translateX(-50%)', fontFamily: 'Alegreya'}} >Traveling with A Friend?</button>
+                    <button type="submit" style={{color: 'white', backgroundColor: '#051c3b', marginTop: 30, fontSize: '1.5rem', transform: 'translateX(-30%)', fontFamily: 'Alegreya'}} >Traveling with A Friend? Click Me</button>
                 </form>
             </Grid>
             <Grid item xs={4}>

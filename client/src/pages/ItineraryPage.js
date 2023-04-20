@@ -125,7 +125,7 @@ export default function ItineraryPage() {
 
   return (
     <Container>
-      <h2>Build an itinerary</h2>
+      <h1>Build an itinerary</h1>
       <Grid container spacing={6}>
       
         <Grid item xs={4}>
