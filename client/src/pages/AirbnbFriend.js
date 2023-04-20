@@ -21,6 +21,16 @@ export default function SongsPage() {
 
     const search = () => {
         console.log("reached");
+        console.log(city);
+        console.log(nights1);
+        console.log(nights2);
+        console.log(price1[0]);        
+        console.log(price1[1]);
+        console.log(price2[0]);
+        console.log(price2[1]);
+        console.log(numPeople1);    
+        console.log(numPeople2);
+
         fetch(`http://${config.server_host}:${config.server_port}/travelwithfriend?A_num_people=${numPeople1}` +
             `&A_min_nights=${nights1}` +
             `&city=${city}` +
