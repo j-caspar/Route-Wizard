@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Box, Button, Checkbox, Container, FormControlLabel, Grid, Link, Slider, TextField } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import './pages.css';
+import Avatar from '@mui/material/Avatar';
 
 import { formatDuration } from '../helpers/formatter';
 const config = require('../config.json');
@@ -10,6 +11,7 @@ export default function RestaurantsPage() {
     const [pageSize, setPageSize] = useState(10);
     const [data, setData] = useState([]);
     const [data2, setData2] = useState([]);
+    const [data3, setData3] = useState([]);
     const [keyword, setKeyword] = useState('');
     const [city, setCity] = useState('Amsterdam');
 
@@ -19,6 +21,30 @@ export default function RestaurantsPage() {
             .then(resJson => {
                 const data = resJson.map((restaurant) => ({ id: restaurant.name, city: restaurant.city, subcategory: restaurant.subcategory, ...restaurant}));
                 setData(data);
+            });
+    }, []);
+
+    useEffect(() => {
+        fetch(`http://${config.server_host}:${config.server_port}/restaurants/pizza`
+        )
+            .then(res => res.json())
+            .then(resJson => {
+                // DataGrid expects an array of objects with a unique id.
+                // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
+                const data2 = resJson.map((pizzaRest) => ({ id: pizzaRest.name, image: pizzaRest.image, city: pizzaRest.city, ...pizzaRest}));
+                setData2(data2);
+            });
+    }, []);
+
+    useEffect(() => {
+        fetch(`http://${config.server_host}:${config.server_port}/restaurants/vegetarian`
+        )
+            .then(res => res.json())
+            .then(resJson => {
+                // DataGrid expects an array of objects with a unique id.
+                // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
+                const data3 = resJson.map((vegRest) => ({ id: vegRest.name, image: vegRest.image, city: vegRest.city, ...vegRest}));
+                setData3(data3);
             });
     }, []);
 
@@ -36,18 +62,30 @@ export default function RestaurantsPage() {
             });
     }
 
-    useEffect(() => {
-        fetch(`http://${config.server_host}:${config.server_port}/pizza?city=${city}`
+    const filterPizza = () => {
+        fetch(`http://${config.server_host}:${config.server_port}/restaurants/pizza?city=${city}`
         )
             .then(res => res.json())
             .then(resJson => {
                 // DataGrid expects an array of objects with a unique id.
                 // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
-                const data2 = resJson.map((pizzaRest) => ({ id: pizzaRest.name, img: pizzaRest.picture_url, ...pizzaRest}));
+                const data2 = resJson.map((pizzaRest) => ({ id: pizzaRest.name, image: pizzaRest.image, city: pizzaRest.city, ...pizzaRest}));
                 setData2(data2);
             });
-    }, []);
-    
+    }
+
+    const filterVeg = () => {
+        fetch(`http://${config.server_host}:${config.server_port}/restaurants/vegetarian?city=${city}`
+        )
+            .then(res => res.json())
+            .then(resJson => {
+                // DataGrid expects an array of objects with a unique id.
+                // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
+                const data3 = resJson.map((vegRest) => ({ id: vegRest.name, image: vegRest.image, city: vegRest.city, ...vegRest}));
+                setData3(data3);
+            });
+    }
+
 
     // This defines the columns of the table of songs used by the DataGrid component.
     // The format of the columns array and the DataGrid component itself is very similar to our
@@ -61,7 +99,14 @@ export default function RestaurantsPage() {
 
     const columns2 = [
         { field: 'name', headerName: 'Name', width: 400},
-        { field: 'picture_url', headerName: 'Image', width: 300},
+        { field: 'image', headerName: 'Picture', width: 300, renderCell: (params) => <Avatar src={params.value} />},
+        { field: 'location', headerName: 'City', width: 300}
+    ]
+
+    const columns3 = [
+        { field: 'name', headerName: 'Name', width: 400},
+        { field: 'image', headerName: 'Picture', width: 300, renderCell: (params2) => <Avatar src={params2.value} />},
+        { field: 'location', headerName: 'City', width: 300}
     ]
 
     // This component makes uses of the Grid component from MUI (https://mui.com/material-ui/react-grid/).
@@ -94,7 +139,7 @@ export default function RestaurantsPage() {
 
 
             <Grid item xs={5}>
-                <Button onClick={() => search()} style={{margin: 50, color: 'white', width: '100%', backgroundColor: '#051c3b', fontSize: '2rem', transform: 'translateX(-50%)' }}>
+                <Button onClick={() => {search(); filterPizza(); filterVeg();}} style={{margin: 50, color: 'white', width: '100%', backgroundColor: '#051c3b', fontSize: '2rem', transform: 'translateX(-50%)' }}>
                     SHOW ME RESTAURANTS
                 </Button>
             </Grid>
@@ -118,11 +163,16 @@ export default function RestaurantsPage() {
                 onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                 autoHeight
             />
-            
 
-            
-
-
+            <h2>Obsessed with veggies? You'd love these places.</h2>
+            <DataGrid
+                rows={data3}
+                columns={columns3}
+                pageSize={pageSize}
+                rowsPerPageOptions={[5, 10, 25]}
+                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                autoHeight
+            />
 
         </Container>
         

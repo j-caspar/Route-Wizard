@@ -103,10 +103,10 @@ const pizza = async function (req, res) {
   const city = req.query.city || 'Amsterdam';
 
   connection.query(`
-  SELECT R.name, S.picture_url
-  FROM restaurants R JOIN subcategory S ON R.subcategory = S.name
-  WHERE (R.name LIKE '%pizza%' OR R.subcategory LIKE '%Pizza Place%') AND location LIKE '${city}'
-  ORDER BY RAND() LIMIT 10
+  SELECT R.name, S.image, R.location
+  FROM restaurants R LEFT JOIN subcategory S ON R.subcategory = S.name
+  WHERE (R.name LIKE '%pizza%' OR R.subcategory LIKE '%Pizza Place%') AND R.location LIKE '${city}' AND S.image IS NOT NULL
+  ORDER BY RAND() LIMIT 10;
   `, (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
@@ -123,14 +123,14 @@ const vegetarian = async function (req, res) {
   const city = req.query.city || 'Amsterdam';
 
   connection.query(`
-  SELECT R.name, R.subcategory, S.picture_url
-  FROM restaurants JOIN subcategory S ON R.subcategory = S.name
-  WHERE name LIKE '%Veg%' OR subcategory = 'Vegetarian / Vegan Restaurant' AND location = '${city}'
-  ORDER BY RAND() LIMIT 10
+  SELECT R.name, S.image, R.location
+  FROM restaurants R LEFT JOIN subcategory S ON R.subcategory = S.name
+  WHERE (R.name LIKE '%Veg%' OR R.subcategory = 'Vegetarian / Vegan Restaurant') AND R.location LIKE '${city}' AND S.image IS NOT NULL
+  ORDER BY RAND() LIMIT 10;
   `, (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
-      res.json({});
+      res.json([]);
     } else {
       console.log(data);
       res.json(data);
