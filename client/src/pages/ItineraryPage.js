@@ -3,7 +3,6 @@ import { Box, Button, Checkbox, Container, FormControlLabel, Grid, Link, Slider,
 import { DataGrid } from '@mui/x-data-grid';
 import './pages.css';
 import Avatar from '@mui/material/Avatar';
-
 import AirbnbCard from '../components/AirbnbCard';
 import { formatDuration } from '../helpers/formatter';
 const config = require('../config.json');
@@ -13,6 +12,7 @@ const google=window.google
 export default function ItineraryPage() {
   const [pageSize, setPageSize] = useState(10);
   const [data, setData] = useState([]);
+  const [selectedAirbnbName, setSelectedAirbnbName] = useState(null);
 
   const [family, setFamily] = useState(false);
   const [price, setPrice] = useState([20, 1000]);
@@ -112,7 +112,11 @@ export default function ItineraryPage() {
   // LazyTable component. The big difference is we provide all data to the DataGrid component
   // instead of loading only the data we need (which is necessary in order to be able to sort by column)
   const columns = [
-    { field: 'name', headerName: 'Name', width: 300 },
+    { field: 'name', headerName: 'Name', width: 300, renderCell: (params) => 
+    params.row.type === 'Accommodation' ? (
+      <Link onClick={() => setSelectedAirbnbName(params.row.name)}>{params.row.name}</Link>
+     ) : null
+    },
     { field: 'image', headerName: 'Picture', width: 300, renderCell: (params) => <Avatar src={params.value} />},
     { field: 'type', headerName: 'Type', width: 200 },
     { field: 'subcategory', headerName: "Subcategory", width: 200}
@@ -129,6 +133,7 @@ export default function ItineraryPage() {
 
   return (
     <Container>
+      {selectedAirbnbName && <AirbnbCard airbnbName={selectedAirbnbName} handleClose={() => setSelectedAirbnbName(null)} />}
       <h1>Build an itinerary</h1>
       <Grid container spacing={5}>
       

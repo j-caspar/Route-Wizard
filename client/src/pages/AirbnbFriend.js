@@ -60,12 +60,12 @@ export default function SongsPage() {
     // instead of loading only the data we need (which is necessary in order to be able to sort by column)
     const columns = [
         { field: 'name', headerName: 'Name 1', width: 300, renderCell: (params) => (
-            <Link onClick={() => setSelectedAirbnbName(params.row.id)}>{params.value}</Link>
+            <Link onClick={() => setSelectedAirbnbName(params.value)}>{params.value}</Link>
         ) },
         { field: 'price', headerName: 'Price/Night 1' },
         { field: 'review_score', headerName: 'Rating 1' }, 
         { field: 'bname', headerName: 'Name 2', width: 300, renderCell: (params) => (
-            <Link onClick={() => setSelectedAirbnbName(params.row.id)}>{params.value}</Link>
+            <Link onClick={() => setSelectedAirbnbName(params.value)}>{params.value}</Link>
         ) },
         { field: 'bprice', headerName: 'Price/Night 2' },
         { field: 'breview_score', headerName: 'Rating 2' },
