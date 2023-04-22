@@ -194,7 +194,7 @@ export default function SongsPage() {
         </Grid>
 
             <h2>Results</h2>
-            {/* Notice how similar the DataGrid component is to our LazyTable! What are the differences? */}
+            <p>The displayed results are optimized for user ratings and the proximity to number of restaurants and attractions.</p>
             <DataGrid
                 rows={data}
                 columns={columns}
