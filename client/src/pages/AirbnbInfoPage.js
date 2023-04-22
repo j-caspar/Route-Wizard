@@ -22,11 +22,8 @@ export default function AlbumInfoPage() {
   const [airbnbData, setAirbnbData] = useState([{}]);
   const [nearbyAttractions, setNearbyAttractions] = useState([{}]);
   const [nearbyRestaurants, setNearbyRestaurants] = useState([{}]);
-  const [songData, setSongData] = useState([{}]); // default should actually just be [], but empty object element added to avoid error in template code
-  const [albumData, setAlbumData] = useState([]);
 
   const [selectedAirbnbName, setSelectedAirbnbName] = useState(null);
-  const [selectedSongId, setSelectedSongId] = useState(null);
 
   const cityCoordinates = {
     Amsterdam: {latCenter: 52.3676, lngCenter: 4.9041,
@@ -58,7 +55,7 @@ export default function AlbumInfoPage() {
           });
   
         fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_rest?lng=${resJson[0].lng}` +
-          `&lat=${resJson[0].lat}` + `&location=${resJson[0].location}`
+          `&lat=${resJson[0].lat}`
         )
           .then(res => res.json())
           .then(resJson => {
