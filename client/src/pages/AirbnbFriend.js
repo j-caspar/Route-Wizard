@@ -69,7 +69,7 @@ export default function SongsPage() {
         ) },
         { field: 'bprice', headerName: 'Price/Night 2' },
         { field: 'breview_score', headerName: 'Rating 2' },
-        { field: 'Distance', headerName: 'Distance (km)' }
+        { field: 'Distance', headerName: 'Distance (km)' , width: 140}
 
     ]
 

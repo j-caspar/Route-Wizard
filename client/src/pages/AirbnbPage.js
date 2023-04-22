@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Box, Button, Checkbox, Container, FormControlLabel, Grid, Link, Slider, TextField } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import { DATA_GRID_PROPS_DEFAULT_VALUES, DataGrid } from '@mui/x-data-grid';
 import './pages.css';
+
+import * as React from 'react';
+import { styled } from '@mui/material/styles';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import ButtonBase from '@mui/material/ButtonBase';
 
 import AirbnbCard from '../components/AirbnbCard';
 import { formatDuration } from '../helpers/formatter';
@@ -19,6 +25,13 @@ export default function SongsPage() {
     const [price, setPrice] = useState([20, 1000]);
     const [lat, setLat] = useState(52.3676);
     const [lng, setLng] = useState(4.9041);
+
+    const Img = styled('img')({
+        margin: 'auto',
+        display: 'block',
+        maxWidth: '100%',
+        maxHeight: '100%',
+    });
 
 
     const cityCoordinates = {
@@ -49,6 +62,15 @@ export default function SongsPage() {
           .then(resJson => {
             const airbnbsWithName = resJson.map((airbnb) => ({ id: airbnb.name, ...airbnb }));
             setData(airbnbsWithName);
+          });
+      }, []);
+
+      useEffect(() => {
+        fetch(`http://${config.server_host}:${config.server_port}/best_airbnb`)
+          .then(res => res.json())
+          .then(resJson => {
+            const data = resJson.map((airbnb) => ({ id: airbnb.name, ...airbnb }));
+            setData(data);
           });
       }, []);
 
@@ -121,11 +143,11 @@ export default function SongsPage() {
     // LazyTable component. The big difference is we provide all data to the DataGrid component
     // instead of loading only the data we need (which is necessary in order to be able to sort by column)
     const columns = [
-        { field: 'name', headerName: 'Name', width: 300, renderCell: (params) => (
+        { field: 'name', headerName: 'Name', width: 400, renderCell: (params) => (
             <Link onClick={() => setSelectedAirbnbName(params.row.id)}>{params.value}</Link>
         ) },
-        { field: 'price', headerName: 'Price/Night' },
-        { field: 'review_score', headerName: 'Rating' }
+        { field: 'price', headerName: 'Price/Night' , width: 400},
+        { field: 'review_score', headerName: 'Rating', width: 400}
     ]
 
     // This component makes uses of the Grid component from MUI (https://mui.com/material-ui/react-grid/).
@@ -203,6 +225,24 @@ export default function SongsPage() {
                 onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                 autoHeight
             />
+
+            <h2>Don't know where to start? Here are our best Airbnbs ever.</h2>
+                <Grid container spacing={2} direction="row" justifyContent="center" alignItems="stretch">
+                    {data.slice(0, 12).map((item, index) => (
+                        <Grid item key={index} xs={12} sm={3} md={2} container direction="column" alignItems="center">
+                            <ButtonBase sx={{ width: '100%', height: 128 }}>
+                                <Img alt={item.name} src={item.picture_url} />
+                            </ButtonBase>
+                            
+                            <Typography gutterBottom variant="subtitle1" component="div" align="center">
+                                {<Link onClick={() => setSelectedAirbnbName(item.name)}>{item.name}</Link>}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" align="center">
+                                {item.location}
+                            </Typography>
+                        </Grid>
+                    ))}
+                </Grid>
         </Container>
     );
 }
