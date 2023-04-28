@@ -3,29 +3,13 @@ import { Box, Container } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import './pages.css';
 import world from '../images/world.jpeg';
-import world2 from '../images/world2.png';
-
 
 const config = require('../config.json');
 
-export default function AlbumsPage() {
-  const [albums, setAlbums] = useState([]);
+export default function HomePage() {
 
-  useEffect(() => {
-    fetch(`http://${config.server_host}:${config.server_port}/albums`)
-      .then(res => res.json())
-      .then(resJson => setAlbums(resJson));
-  }, []);
-
-  // flexFormat provides the formatting options for a "flexbox" layout that enables the album cards to
-  // be displayed side-by-side and wrap to the next line when the screen is too narrow. Flexboxes are
-  // incredibly powerful. You can learn more on MDN web docs linked below (or many other online resources)
-  // https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox
   const flexFormat = { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-evenly' };
-
   return (
-    // TODO (TASK 22): replace the empty object {} in the Container's style property with flexFormat. Observe the change to the Albums page.
-    // TODO (TASK 22): then uncomment the code to display the cover image and once again observe the change, i.e. what happens to the layout now that each album card has a fixed width?
 <Container style={{ backgroundImage: `url(${world})`, backgroundSize: "cover"}}>      
       <h2 className="centered-h2"> TIME TO TRAVEL...&nbsp; 
       </h2>

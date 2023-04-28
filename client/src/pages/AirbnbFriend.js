@@ -4,14 +4,13 @@ import { DataGrid } from '@mui/x-data-grid';
 import './pages.css';
 
 import AirbnbCard from '../components/AirbnbCard';
-import { formatDuration } from '../helpers/formatter';
 const config = require('../config.json');
 
-export default function SongsPage() {
+export default function AirbnbFriendPage() {
     const [pageSize, setPageSize] = useState(10);
     const [data, setData] = useState([]);
     const [selectedAirbnbName, setSelectedAirbnbName] = useState(null);
-    const [city, setCity] = useState('Amsterdam');
+    const [city, setCity] = useState('Unselected');
     const [numPeople1, setNumPeople1] = useState(1);
     const [nights1, setNights1] = useState(1);
     const [numPeople2, setNumPeople2] = useState(1);
@@ -20,44 +19,30 @@ export default function SongsPage() {
     const [price2, setPrice2] = useState([20, 1000]);
 
     const search = () => {
-        console.log("reached");
-        console.log(city);
-        console.log(nights1);
-        console.log(nights2);
-        console.log(price1[0]);        
-        console.log(price1[1]);
-        console.log(price2[0]);
-        console.log(price2[1]);
-        console.log(numPeople1);    
-        console.log(numPeople2);
-
-        fetch(`http://${config.server_host}:${config.server_port}/travelwithfriend?A_num_people=${numPeople1}` +
-            `&A_min_nights=${nights1}` +
-            `&city=${city}` +
-            `&A_min_price=${price1[0]}` +
-            `&A_max_price=${price1[1]}` +
-            `&B_num_people=${numPeople2}`+
-            `&B_min_nights=${nights2}` +
-            `&B_min_price=${price2[0]}` +
-            `&B_max_price=${price2[1]}`
-        )
-            .then(res => res.json())
-            .then(resJson => {
-                if (Object.keys(resJson).length === 0) {
-                    setData([]);
-                } else {
-                const airbnbsWithName = resJson.map((airbnb) => ({ id: `${airbnb.name}-${airbnb.bname}`, ...airbnb }));
-                console.log(resJson);
-                setData(airbnbsWithName);
-              }
+        if (city !== 'Unselected') {
+            fetch(`http://${config.server_host}:${config.server_port}/travelwithfriend?A_num_people=${numPeople1}` +
+                `&A_min_nights=${nights1}` +
+                `&city=${city}` +
+                `&A_min_price=${price1[0]}` +
+                `&A_max_price=${price1[1]}` +
+                `&B_num_people=${numPeople2}`+
+                `&B_min_nights=${nights2}` +
+                `&B_min_price=${price2[0]}` +
+                `&B_max_price=${price2[1]}`
+            )
+                .then(res => res.json())
+                .then(resJson => {
+                    if (Object.keys(resJson).length === 0) {
+                        setData([]);
+                    } else {
+                    const airbnbsWithName = resJson.map((airbnb) => ({ id: `${airbnb.name}-${airbnb.bname}`, ...airbnb }));
+                    setData(airbnbsWithName);
+                }
             });
+        }
     }
     
 
-    // This defines the columns of the table of songs used by the DataGrid component.
-    // The format of the columns array and the DataGrid component itself is very similar to our
-    // LazyTable component. The big difference is we provide all data to the DataGrid component
-    // instead of loading only the data we need (which is necessary in order to be able to sort by column)
     const columns = [
         { field: 'name', headerName: 'Name 1', width: 300, renderCell: (params) => (
             <Link onClick={() => setSelectedAirbnbName(params.value)}>{params.value}</Link>
@@ -73,13 +58,6 @@ export default function SongsPage() {
 
     ]
 
-    // This component makes uses of the Grid component from MUI (https://mui.com/material-ui/react-grid/).
-    // The Grid component is super simple way to create a page layout. Simply make a <Grid container> tag
-    // (optionally has spacing prop that specifies the distance between grid items). Then, enclose whatever
-    // component you want in a <Grid item xs={}> tag where xs is a number between 1 and 12. Each row of the
-    // grid is 12 units wide and the xs attribute specifies how many units the grid item is. So if you want
-    // two grid items of the same size on the same row, define two grid items with xs={6}. The Grid container
-    // will automatically lay out all the grid items into rows based on their xs values.
     return (
         <Container>
             {selectedAirbnbName && <AirbnbCard airbnbName={selectedAirbnbName} handleClose={() => setSelectedAirbnbName(null)} />}
@@ -90,6 +68,7 @@ export default function SongsPage() {
             <Grid item xs={6}>
             <h4>City</h4>
                 <select value={city} onChange={(e) => setCity(e.target.value)} className='dropdown'>
+                    <option value="Unselected">Select a City</option>
                     <option value="Amsterdam">Amsterdam</option>
                     <option value="Barcelona">Barcelona</option>
                     <option value="Berlin">Berlin</option>
@@ -145,7 +124,6 @@ export default function SongsPage() {
         </Grid>
 
             <h2>Results</h2>
-            {/* Notice how similar the DataGrid component is to our LazyTable! What are the differences? */}
             <DataGrid
                 rows={data}
                 columns={columns}

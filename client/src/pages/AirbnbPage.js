@@ -10,21 +10,20 @@ import Typography from '@mui/material/Typography';
 import ButtonBase from '@mui/material/ButtonBase';
 
 import AirbnbCard from '../components/AirbnbCard';
-import { formatDuration } from '../helpers/formatter';
 const config = require('../config.json');
 const google=window.google
 
-export default function SongsPage() {
+export default function AirbnbPage() {
     const [pageSize, setPageSize] = useState(10);
     const [data, setData] = useState([]);
     const [selectedAirbnbName, setSelectedAirbnbName] = useState(null);
-    const [city, setCity] = useState('Amsterdam');
-
+    const [city, setCity] = useState('Unselected');
     const [numPeople, setNumPeople] = useState(1);
     const [nights, setNights] = useState(1);
     const [price, setPrice] = useState([20, 1000]);
     const [lat, setLat] = useState(52.3676);
     const [lng, setLng] = useState(4.9041);
+    const [displayTable, setDisplayTable] = useState(false);
 
     const Img = styled('img')({
         margin: 'auto',
@@ -47,12 +46,17 @@ export default function SongsPage() {
             latMin: 48.81608, latMax: 48.90167, lngMin: 2.22843, lngMax: 2.46712},
         Rome: {latCenter: 41.9028, lngCenter: 12.4964,
             latMin: 41.65701, latMax: 42.1216, lngMin: 12.25167, lngMax: 12.79247},
+        Unselected: {latCenter: 47.3220, lngCenter: 5.0415}
       };
 
     useEffect(() => {
         if (city) {
-          const { latCenter, lngCenter, latMin, latMax, lngMin, lngMax } = cityCoordinates[city];
-          initMap(latCenter, lngCenter, latMin, latMax, lngMin, lngMax);
+            if (city === 'Unselected') {
+                initMapEurope()
+            } else {
+                const { latCenter, lngCenter, latMin, latMax, lngMin, lngMax } = cityCoordinates[city];
+                 initMap(latCenter, lngCenter, latMin, latMax, lngMin, lngMax);
+            }
         }
       }, [city]);
 
@@ -65,15 +69,14 @@ export default function SongsPage() {
           });
       }, []);
 
-      useEffect(() => {
-        fetch(`http://${config.server_host}:${config.server_port}/best_airbnb`)
-          .then(res => res.json())
-          .then(resJson => {
-            const data = resJson.map((airbnb) => ({ id: airbnb.name, ...airbnb }));
-            setData(data);
+    function initMapEurope() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 5,
+            center: {lat: 47.3220, lng: 5.0415},
+            draggable: false,
+            zoomControl: false
           });
-      }, []);
-
+    }
 
     function initMap(latCenter, lngCenter, latMin, latMax, lngMin, lngMax) {
         var bounds = new google.maps.LatLngBounds(
@@ -107,41 +110,30 @@ export default function SongsPage() {
   }
 
     const search = () => {
-        console.log(numPeople);
-        console.log(nights);
-        console.log(city);
-        console.log(price[0]);
-        console.log(price[1]);
-        console.log(lat);
-        console.log(lng);
-
-        fetch(`http://${config.server_host}:${config.server_port}/airbnbs?numPeople=${numPeople}` +
-            `&nights=${nights}` +
-            `&city=${city}` +
-            `&minPrice=${price[0]}` +
-            `&maxPrice=${price[1]}` +
-            `&lat=${lat}` +
-            `&lng=${lng}`
-        )
-            .then(res => res.json())
-            .then(resJson => {
-                console.log(resJson);
-                console.log(resJson.length);
-
-                if (Object.keys(resJson).length === 0) {
-                    setData([]);
-                } else {
-                    const airbnbsWithName = resJson.map((airbnb) => ({ id: airbnb.name, ...airbnb }));
-                    setData(airbnbsWithName);
-                }
-            });
+        if (city !== 'Unselected') {
+            fetch(`http://${config.server_host}:${config.server_port}/airbnbs?numPeople=${numPeople}` +
+                `&nights=${nights}` +
+                `&city=${city}` +
+                `&minPrice=${price[0]}` +
+                `&maxPrice=${price[1]}` +
+                `&lat=${lat}` +
+                `&lng=${lng}`
+            )
+                .then(res => res.json())
+                .then(resJson => {
+                    if (Object.keys(resJson).length === 0) {
+                        setData([]);
+                    } else {
+                        const airbnbsWithName = resJson.map((airbnb) => ({ id: airbnb.name, ...airbnb }));
+                        setData(airbnbsWithName);
+                        setDisplayTable(true);
+                    }
+                });
+            } else {
+                setDisplayTable(false);
+            }
     }
     
-
-    // This defines the columns of the table of songs used by the DataGrid component.
-    // The format of the columns array and the DataGrid component itself is very similar to our
-    // LazyTable component. The big difference is we provide all data to the DataGrid component
-    // instead of loading only the data we need (which is necessary in order to be able to sort by column)
     const columns = [
         { field: 'name', headerName: 'Name', width: 400, renderCell: (params) => (
             <Link onClick={() => setSelectedAirbnbName(params.row.id)}>{params.value}</Link>
@@ -150,13 +142,6 @@ export default function SongsPage() {
         { field: 'review_score', headerName: 'Rating', width: 400}
     ]
 
-    // This component makes uses of the Grid component from MUI (https://mui.com/material-ui/react-grid/).
-    // The Grid component is super simple way to create a page layout. Simply make a <Grid container> tag
-    // (optionally has spacing prop that specifies the distance between grid items). Then, enclose whatever
-    // component you want in a <Grid item xs={}> tag where xs is a number between 1 and 12. Each row of the
-    // grid is 12 units wide and the xs attribute specifies how many units the grid item is. So if you want
-    // two grid items of the same size on the same row, define two grid items with xs={6}. The Grid container
-    // will automatically lay out all the grid items into rows based on their xs values.
     return (
         <Container>
             {selectedAirbnbName && <AirbnbCard airbnbName={selectedAirbnbName} handleClose={() => setSelectedAirbnbName(null)} />}
@@ -181,6 +166,7 @@ export default function SongsPage() {
             <h4>City</h4>
                 <select value={city} onChange={(e) => {setCity(e.target.value); setLat(cityCoordinates[e.target.value].latCenter);
                 setLng(cityCoordinates[e.target.value].lngCenter)}} className='dropdown'>
+                    <option value="Unselected">Select a City</option>
                     <option value="Amsterdam">Amsterdam</option>
                     <option value="Barcelona">Barcelona</option>
                     <option value="Berlin">Berlin</option>
@@ -215,18 +201,21 @@ export default function SongsPage() {
             </Grid>
         </Grid>
 
+        {displayTable && (
+        <>
             <h2>Results</h2>
-            <p>The displayed results are optimized for user ratings and the proximity to number of restaurants and attractions.</p>
-            <DataGrid
-                rows={data}
-                columns={columns}
-                pageSize={pageSize}
-                rowsPerPageOptions={[5, 10, 25]}
-                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                autoHeight
-            />
-
-            <h2>Don't know where to start? Here are our best Airbnbs ever.</h2>
+            <p>The displayed results are optimized for user ratings, proximity to desired location, and number of reviews.</p>
+        <DataGrid
+            rows={data}
+            columns={columns}
+            pageSize={pageSize}
+            rowsPerPageOptions={[5, 10, 25]}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            autoHeight
+        />
+        </>
+        )}
+            <h2>Don't know where to start? Here are our best Airbnbs.</h2>
                 <Grid container spacing={2} direction="row" justifyContent="center" alignItems="stretch">
                     {data.slice(0, 12).map((item, index) => (
                         <Grid item key={index} xs={12} sm={3} md={2} container direction="column" alignItems="center">

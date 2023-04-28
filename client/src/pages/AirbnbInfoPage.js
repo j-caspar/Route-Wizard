@@ -3,7 +3,6 @@ import { useParams, Link, json } from 'react-router-dom';
 import { Container, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import AirbnbCard from '../components/AirbnbCard';
-import { formatDuration, formatReleaseDate } from '../helpers/formatter';
 const config = require('../config.json');
 const google=window.google
 
@@ -14,14 +13,12 @@ export const openInNewTab = (url) => {
 };
 
 
-
-export default function AlbumInfoPage() {
+export default function AirbnbInfoPage() {
   const { bnb_name } = useParams();
   var airbnbLat = '';
   var airbnbLng = '';
   var airbnbName = '';
   var airbnbLocation = '';
-
   const [pageSize, setPageSize] = useState(10);
   const [airbnbData, setAirbnbData] = useState([{}]);
   const [nearbyAttractions, setNearbyAttractions] = useState([{}]);

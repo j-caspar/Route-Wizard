@@ -6,53 +6,22 @@ import { useParams, NavLink } from 'react-router-dom';
 import { formatDuration } from '../helpers/formatter';
 const config = require('../config.json');
 
-// SongCard is a modal (a common example of a modal is a dialog window).
-// Typically, modals will conditionally appear (specified by the Modal's open property)
-// but in our implementation whether the Modal is open is handled by the parent component
-// (see HomePage.js for example), since it depends on the state (selectedSongId) of the parent
 export default function AirbnbCard({ airbnbName, handleClose }) {
   const [airbnbData, setAirbnbData] = useState({});
 
-  const [barRadar, setBarRadar] = useState(true);
-
-  // TODO (TASK 20): fetch the song specified in songId and based on the fetched album_id also fetch the album data
-  // Hint: you need to both fill in the callback and the dependency array (what variable determines the information you need to fetch?)
-  // Hint: since the second fetch depends on the information from the first, try nesting the second fetch within the then block of the first (pseudocode is provided)
   useEffect(() => {
-    // Hint: here is some pseudocode to guide you
-    // fetch(song data, id determined by songId prop)
-    //   .then(res => res.json())
-    //   .then(resJson => {
-    //     set state variable with song dta
-    //     fetch(album data, id determined by result in resJson)
-    //       .then(res => res.json())
-    //       .then(resJson => set state variable with album data)
-    //     })
     fetch(`http://${config.server_host}:${config.server_port}/airbnbs/${airbnbName}`)
     .then(res => res.json())
     .then(resJson => {
-      setAirbnbData(resJson[0]);
+      if (resJson.length > 0) {
+        setAirbnbData(resJson[0]);
+      }
     })
   }, []);
 
-  const chartData = [
-    { name: 'Image', value: airbnbData.picture_url},
-    { name: 'Price', value: airbnbData.price},
-    { name: 'Neighborhood', value: airbnbData.neighborhood},
-    { name: 'Minimum # of nights', value: airbnbData.min_nights },
-    { name: 'Max # of guests', value: airbnbData.num_accommodates},
-    { name: 'Listing URL', value: airbnbData.listing_url },
-    { name: 'Review Score', value: airbnbData.review_score},
-    { name: '# of reviews', value: airbnbData.num_reviews},
-    { name: 'Host is superhost', value: airbnbData.host_is_superhost },
-    { name: 'Review Score', value: airbnbData.review_score}
-  ];
-
-  const handleGraphChange = () => {
-    setBarRadar(!barRadar);
-  };
-
   return (
+    <>
+    {airbnbData.length !== 0 && (
     <Modal
       open={true}
       onClose={handleClose}
@@ -75,5 +44,7 @@ export default function AirbnbCard({ airbnbName, handleClose }) {
         </Button>
       </Box>
     </Modal>
+    )}
+  </>
   );
 }
