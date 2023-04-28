@@ -124,7 +124,6 @@ export default function AirbnbFriendPage() {
         </Grid>
 
             <h2>Results</h2>
-            {/* Notice how similar the DataGrid component is to our LazyTable! What are the differences? */}
             <DataGrid
                 rows={data}
                 columns={columns}

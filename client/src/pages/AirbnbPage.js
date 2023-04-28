@@ -23,6 +23,7 @@ export default function AirbnbPage() {
     const [price, setPrice] = useState([20, 1000]);
     const [lat, setLat] = useState(52.3676);
     const [lng, setLng] = useState(4.9041);
+    const [displayTable, setDisplayTable] = useState(false);
 
     const Img = styled('img')({
         margin: 'auto',
@@ -109,14 +110,7 @@ export default function AirbnbPage() {
   }
 
     const search = () => {
-        if (city === 'Unselected') {
-            fetch(`http://${config.server_host}:${config.server_port}/best_airbnb`)
-            .then(res => res.json())
-            .then(resJson => {
-              const airbnbsWithName = resJson.map((airbnb) => ({ id: airbnb.name, ...airbnb }));
-              setData(airbnbsWithName);
-            });
-        } else {
+        if (city !== 'Unselected') {
             fetch(`http://${config.server_host}:${config.server_port}/airbnbs?numPeople=${numPeople}` +
                 `&nights=${nights}` +
                 `&city=${city}` +
@@ -127,16 +121,16 @@ export default function AirbnbPage() {
             )
                 .then(res => res.json())
                 .then(resJson => {
-                    console.log(resJson);
-                    console.log(resJson.length);
-
                     if (Object.keys(resJson).length === 0) {
                         setData([]);
                     } else {
                         const airbnbsWithName = resJson.map((airbnb) => ({ id: airbnb.name, ...airbnb }));
                         setData(airbnbsWithName);
+                        setDisplayTable(true);
                     }
                 });
+            } else {
+                setDisplayTable(false);
             }
     }
     
@@ -207,17 +201,20 @@ export default function AirbnbPage() {
             </Grid>
         </Grid>
 
+        {displayTable && (
+        <>
             <h2>Results</h2>
-            <p>The displayed results are optimized for user ratings and the proximity to number of restaurants and attractions.</p>
-            <DataGrid
-                rows={data}
-                columns={columns}
-                pageSize={pageSize}
-                rowsPerPageOptions={[5, 10, 25]}
-                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                autoHeight
-            />
-
+            <p>The displayed results are optimized for user ratings, proximity to desired location, and number of reviews.</p>
+        <DataGrid
+            rows={data}
+            columns={columns}
+            pageSize={pageSize}
+            rowsPerPageOptions={[5, 10, 25]}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            autoHeight
+        />
+        </>
+        )}
             <h2>Don't know where to start? Here are our best Airbnbs.</h2>
                 <Grid container spacing={2} direction="row" justifyContent="center" alignItems="stretch">
                     {data.slice(0, 12).map((item, index) => (
