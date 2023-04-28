@@ -23,6 +23,7 @@ app.get('/attractions', routes.attractions);
 app.get('/random_attr', routes.random_attr);
 app.get('/attractions/museums', routes.museums);
 app.get('/attractions/adult_only', routes.adult_only);
+app.get('/attractions/bar_hopping', routes.bar_hopping);
 app.get('/itinerary', routes.itinerary);
 app.get('/travelwithfriend', routes.friends);
 

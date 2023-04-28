@@ -366,6 +366,50 @@ const adult_only = async function (req, res) {
   });
 }
 
+// GET /bar_hopping
+const bar_hopping = async function (req, res) {
+  const city = req.query.city || 'Amsterdam';
+
+  connection.query(`
+  WITH bar1 AS (
+    SELECT A.name, A.lat, A.lng, S.image, S.name AS subcategory
+    FROM attractions A JOIN subcategory S on A.subcategory = S.name
+    WHERE S.adult_only = true and A.location LIKE '%${city}%'
+    ORDER BY RAND()
+    LIMIT 1
+), bar2 AS (
+    SELECT a1.name, S.image, S.name AS subcategory
+    FROM attractions a1 JOIN subcategory S on a1.subcategory = S.name JOIN bar1 a2
+    WHERE S.adult_only = true and a1.location LIKE '%${city}%' AND a1.name != a2.name AND
+    SQRT((a1.lat - a2.lat) * (a1.lat - a2.lat) + (a1.lng - a2.lng) * (a1.lng - a2.lng)) * 111.139 < 1
+    ORDER BY RAND()
+    LIMIT 1
+), bar3 AS (
+    SELECT a1.name, S.image, S.name AS subcategory
+    FROM attractions a1 JOIN subcategory S on a1.subcategory = S.name JOIN bar2 a3 JOIN bar1 a2
+    WHERE S.adult_only = true and a1.location LIKE '%${city}%' AND a1.name != a2.name AND a1.name != a3.name AND
+    SQRT((a1.lat - a2.lat) * (a1.lat - a2.lat) + (a1.lng - a2.lng) * (a1.lng - a2.lng)) * 111.139 < 1
+    ORDER BY RAND()
+    LIMIT 1
+)
+SELECT name, image, subcategory FROM bar1
+UNION
+SELECT name, image, subcategory FROM bar2
+UNION
+SELECT name, image, subcategory FROM bar3;
+      `, (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      console.log('no data');
+      res.json([]);
+    } else {
+      console.log('there data');
+      console.log(data);
+      res.json(data);
+    }
+  });
+}
+
 // GET /airbnbs
 const airbnbs = async function (req, res) {
   const city = req.query.city || 'Amsterdam';
@@ -546,4 +590,5 @@ module.exports = {
   nearby_rest,
   airbnbs,
   bnb,
+  bar_hopping
 }

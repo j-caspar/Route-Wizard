@@ -14,6 +14,7 @@ export default function AttractionsPage() {
     const [data, setData] = useState([]);
     const [data2, setData2] = useState([]);
     const [data3, setData3] = useState([]);
+    const [data4, setData4] = useState([]);
     const [keyword, setKeyword] = useState('');
     const [city, setCity] = useState('Amsterdam');
 
@@ -65,6 +66,20 @@ export default function AttractionsPage() {
             });
         }, []);
 
+        useEffect(() => {
+            fetch(`http://${config.server_host}:${config.server_port}/attractions/bar_hopping`
+            )
+                .then(res => res.json())
+                .then(resJson => {
+                    if (Object.keys(resJson).length === 0) {
+                        setData([]);
+                    } else {
+                        const data4 = resJson.map((bars) => ({ id: bars.name, image: bars.image, subcategory: bars.subcategory, ...bars }));
+                        setData4(data4);
+                    }
+                });
+            }, []);
+
 
     const search = () => {
         fetch(`http://${config.server_host}:${config.server_port}/attractions?keyword=${keyword}` +
@@ -108,6 +123,19 @@ export default function AttractionsPage() {
             }
         });
 }
+const filterBars = () => {
+    fetch(`http://${config.server_host}:${config.server_port}/attractions/bar_hopping?city=${city}`
+    )
+        .then(res => res.json())
+        .then(resJson => {
+            if (Object.keys(resJson).length === 0) {
+                setData([]);
+            } else {
+            const data4 = resJson.map((bars) => ({ id: bars.name, image: bars.image, subcategory: bars.subcategory, ...bars }));
+            setData4(data4);
+        }
+    });
+}
 
     const columns = [
         { field: 'name', headerName: 'Name', width: 400 },
@@ -137,7 +165,7 @@ export default function AttractionsPage() {
 
 
                 <Grid item xs={5}>
-                    <Button onClick={() => { search(); filterMuseums(); filterAdult(); }} style={{ margin: 50, color: 'white', width: '100%', backgroundColor: '#051c3b', fontSize: '2rem', transform: 'translateX(-50%)' }}>
+                    <Button onClick={() => { search(); filterMuseums(); filterAdult(); filterBars();}} style={{ margin: 50, color: 'white', width: '100%', backgroundColor: '#051c3b', fontSize: '2rem', transform: 'translateX(-50%)' }}>
                         SHOW ME ATTRACTIONS
                     </Button>
                 </Grid>
@@ -191,6 +219,23 @@ export default function AttractionsPage() {
                             </Typography>
                             <Typography variant="body3" color="text.secondary" align="center">
                                 {item.subcategory} in {item.location}
+                            </Typography>
+                        </Grid>
+                    ))}
+                </Grid>
+
+                <h2>Want a bar crawl?</h2>
+                <Grid container spacing={2} direction="row" justifyContent="center" alignItems="stretch">
+                    {data4.map((item, index) => (
+                        <Grid item key={index} xs={12} sm={3} md={2} container direction="column" alignItems="center">
+                            <ButtonBase sx={{ width: '100%', height: 128 }}>
+                                <Img alt={item.name} src={item.image} />
+                            </ButtonBase>
+                            <Typography gutterBottom variant="subtitle1" component="div" align="center">
+                                {item.name}
+                            </Typography>
+                            <Typography variant="body3" color="text.secondary" align="center">
+                                {item.subcategory}
                             </Typography>
                         </Grid>
                     ))}
