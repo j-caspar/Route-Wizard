@@ -21,7 +21,7 @@ export default function AirbnbInfoPage() {
   var airbnbLocation = '';
   const [pageSize, setPageSize] = useState(10);
   const [airbnbData, setAirbnbData] = useState([{}]);
-  const [nearbyAttractions, setNearbyAttractions] = useState([{}]);
+  //const [nearbyAttractions, setNearbyAttractions] = useState([{}]);
   const [nearbyRestaurants, setNearbyRestaurants] = useState([{}]);
 
   const [selectedAirbnbName, setSelectedAirbnbName] = useState(null);
@@ -51,6 +51,7 @@ export default function AirbnbInfoPage() {
         airbnbName = resJson[0].name;
         airbnbLocation = resJson[0].location;
       });
+      /*
         fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_nightlife?lng=${airbnbLng}` +
           `&lat=${airbnbLat}` + `&location=${airbnbLocation}`
         )
@@ -64,12 +65,15 @@ export default function AirbnbInfoPage() {
             setNearbyAttractions(attractions);
             
           });
+
+          */
   
         fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_rest?lng=${airbnbLng}` +
           `&lat=${airbnbLat}` + `&name=${airbnbName}`
         )
           .then(res => res.json())
           .then(resJson => {
+            console.log(resJson);
             const restaurants = resJson.map((rest) => ({ id: rest.name, ...rest }));
             setNearbyRestaurants(restaurants);
           });
@@ -108,7 +112,11 @@ export default function AirbnbInfoPage() {
     },
     });
 
+    https://maps.google.com/mapfiles/ms/icons/restaurant.png
+
     nearbyRestaurants.map((restaurant) => {
+      console.log("here is a restaurant lat");
+      console.log(restaurant.lng);
       var markerTitle = restaurant.name;
       if (restaurant.subcategory) {
         markerTitle += ": " + restaurant.subcategory;
@@ -127,6 +135,7 @@ export default function AirbnbInfoPage() {
       });
     });
 
+    /*
     nearbyAttractions.map((attraction) => {
       var marker = new google.maps.Marker({
         position: new google.maps.LatLng(attraction.lat, attraction.lng),
@@ -141,6 +150,7 @@ export default function AirbnbInfoPage() {
         infowindow.open(map, this);
       });
     });
+    */
   
     map.setOptions({ minZoom: 12, maxZoom: 20 });
   }

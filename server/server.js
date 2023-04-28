@@ -16,7 +16,7 @@ app.get('/restaurants', routes.restaurants);
 app.get('/restaurants/random_rest', routes.random_rest);
 app.get('/restaurants/pizza', routes.pizza);
 app.get('/restaurants/vegetarian', routes.vegetarian);
-app.get('/airbnbs/nearby_nightlife', routes.nearby_nightlife);
+//app.get('/airbnbs/nearby_nightlife', routes.nearby_nightlife);
 app.get('/airbnbs/nearby_rest', routes.nearby_rest);
 app.get('/airbnbs/:bnb_name', routes.bnb);
 app.get('/attractions', routes.attractions);

@@ -133,6 +133,8 @@ const vegetarian = async function (req, res) {
   });
 }
 
+/*
+
 // GET /nearby_nightlife
 const nearby_nightlife = async function (req, res) {
   const lng = req.query.lng;
@@ -151,11 +153,14 @@ const nearby_nightlife = async function (req, res) {
       console.log(err);
       res.json({});
     } else {
+      console.log("here are the nearby attractions");
       console.log(data);
       res.json(data);
     }
   });
 }
+
+/*
 
 // GET /nearby_rest
 // const nearby_rest = async function (req, res) {
@@ -215,28 +220,16 @@ const nearby_nightlife = async function (req, res) {
 const nearby_rest = async function (req, res) {
   const lng = req.query.lng;
   const lat = req.query.lat;
-  const name = req.query.name;
 
-  connection.query(`
-  DROP TABLE IF EXISTS tempDist;
-  CREATE TABLE tempDist(nameA varchar(255), nameR varchar(255), dist DECIMAL(28, 20));
-  CREATE INDEX IX_closest ON tempDist(dist);
-  INSERT INTO tempDist(nameA, nameR, dist) (
-  SELECT '${name}', name, (SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)))
-  FROM restaurants);
-  SELECT DISTINCT(nameR), dist, 'Restaurant' as subcategory
-  FROM tempDist
-  WHERE nameA = '${name}'
+  connection.query(
+  `SELECT name, (SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng))) AS dist, lat, lng
+  FROM restaurants
   ORDER BY dist
-  LIMIT 10;
-   '
-  `, (err, data) => {
+  LIMIT 10`, (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
-      console.log("Data is empty");
-      res.json({});
+      res.json([]);
     } else {
-      console.log("Data is NOT EMPTY");
       console.log(data);
       res.json(data);
     }
@@ -849,7 +842,7 @@ module.exports = {
   random_rest,
   pizza,
   vegetarian,
-  nearby_nightlife,
+ // nearby_nightlife,
   attractions,
   random_attr,
   museums,
