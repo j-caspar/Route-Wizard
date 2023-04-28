@@ -4,7 +4,6 @@ import { DataGrid } from '@mui/x-data-grid';
 import './pages.css';
 import Avatar from '@mui/material/Avatar';
 import AirbnbCard from '../components/AirbnbCard';
-import { formatDuration } from '../helpers/formatter';
 const config = require('../config.json');
 const google=window.google
 
@@ -18,7 +17,7 @@ export default function ItineraryPage() {
   const [price, setPrice] = useState([20, 1000]);
   const [days, setDays] = useState('1');
   const [guests, setGuests] = useState('1');
-  const [city, setCity] = useState('Amsterdam');
+  const [city, setCity] = useState('Unselected');
   const [lat, setLat] = useState(52.3676);
   const [lng, setLng] = useState(4.9041);
 
@@ -35,23 +34,28 @@ export default function ItineraryPage() {
         latMin: 48.81608, latMax: 48.90167, lngMin: 2.22843, lngMax: 2.46712},
     Rome: {latCenter: 41.9028, lngCenter: 12.4964,
         latMin: 41.65701, latMax: 42.1216, lngMin: 12.25167, lngMax: 12.79247},
+    Unselected: {latCenter: 47.3220, lngCenter: 5.0415}
   };
 
   useEffect(() => {
     if (city) {
-      const { latCenter, lngCenter, latMin, latMax, lngMin, lngMax } = cityCoordinates[city];
-      initMap(latCenter, lngCenter, latMin, latMax, lngMin, lngMax);
+        if (city === 'Unselected') {
+            initMapEurope()
+        } else {
+            const { latCenter, lngCenter, latMin, latMax, lngMin, lngMax } = cityCoordinates[city];
+             initMap(latCenter, lngCenter, latMin, latMax, lngMin, lngMax);
+        }
     }
   }, [city]);
 
-  useEffect(() => {
-    fetch(`http://${config.server_host}:${config.server_port}/itinerary`)
-      .then(res => res.json())
-      .then(resJson => {
-        const data = resJson.map((itinerary) => ({ id: itinerary.name, picture: itinerary.image, type: itinerary.type, ...itinerary }));
-        setData(data);
+  function initMapEurope() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 5,
+        center: {lat: 47.3220, lng: 5.0415},
+        draggable: false,
+        zoomControl: false
       });
-  }, []);
+}
 
   function initMap(latCenter, lngCenter, latMin, latMax, lngMin, lngMax) {
     var bounds = new google.maps.LatLngBounds(
@@ -85,32 +89,28 @@ export default function ItineraryPage() {
 }
 
   const search = () => {
-    fetch(`http://${config.server_host}:${config.server_port}/itinerary?city=${city}` +
-      `&days=${days}` + 
-      `&num_people=${guests}` + 
-      `&min_price=${price[0]}` +
-      `&max_price=${price[1]}` +
-      `&adult_only=${family}`+
-      `&lat=${lat}` +
-      `&lng=${lng}`
-    )
-      .then(res => res.json())
-      .then(resJson => {
-        // DataGrid expects an array of objects with a unique id.
-        // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
-        if (Object.keys(resJson).length === 0) {
-          setData([]);
-        } else {
-          const data = resJson.map((itinerary) => ({ id: itinerary.name, picture: itinerary.image, type: itinerary.type, ...itinerary }));
-          setData(data);
-        }
-    });
+    if (city !== 'Unselected') {
+      fetch(`http://${config.server_host}:${config.server_port}/itinerary?city=${city}` +
+        `&days=${days}` + 
+        `&num_people=${guests}` + 
+        `&min_price=${price[0]}` +
+        `&max_price=${price[1]}` +
+        `&adult_only=${family}`+
+        `&lat=${lat}` +
+        `&lng=${lng}`
+      )
+        .then(res => res.json())
+        .then(resJson => {
+          if (Object.keys(resJson).length === 0) {
+            setData([]);
+          } else {
+            const data = resJson.map((itinerary) => ({ id: itinerary.name, picture: itinerary.image, type: itinerary.type, ...itinerary }));
+            setData(data);
+          }
+      });
+    }
   }
 
-  // This defines the columns of the table of songs used by the DataGrid component.
-  // The format of the columns array and the DataGrid component itself is very similar to our
-  // LazyTable component. The big difference is we provide all data to the DataGrid component
-  // instead of loading only the data we need (which is necessary in order to be able to sort by column)
   const columns = [
     { field: 'name', headerName: 'Name', width: 300, renderCell: (params) => 
     params.row.type === 'Accommodation' ? (
@@ -121,15 +121,6 @@ export default function ItineraryPage() {
     { field: 'type', headerName: 'Type', width: 200 },
     { field: 'subcategory', headerName: "Subcategory", width: 200}
   ]
-
-  // This component makes uses of the Grid component from MUI (https://mui.com/material-ui/react-grid/).
-  // The Grid component is super simple way to create a page layout. Simply make a <Grid container> tag
-  // (optionally has spacing prop that specifies the distance between grid items). Then, enclose whatever
-  // component you want in a <Grid item xs={}> tag where xs is a number between 1 and 12. Each row of the
-  // grid is 12 units wide and the xs attribute specifies how many units the grid item is. So if you want
-  // two grid items of the same size on the same row, define two grid items with xs={6}. The Grid container
-  // will automatically lay out all the grid items into rows based on their xs values.
-  //       {selectedSongId && <AirbnbCard songId={selectedSongId} handleClose={() => setSelectedSongId(null)} />}
 
   return (
     <Container>
@@ -149,6 +140,7 @@ export default function ItineraryPage() {
           <h4>City</h4>
           <select value={city} onChange={(e) => {setCity(e.target.value); setLat(cityCoordinates[e.target.value].latCenter);
                 setLng(cityCoordinates[e.target.value].lngCenter)}} className='dropdown' style={{ width: 300, height: 50 }}>
+            <option value="Unselected">Select a City</option>
             <option value="Amsterdam">Amsterdam</option>
             <option value="Barcelona">Barcelona</option>
             <option value="Berlin">Berlin</option>
@@ -194,7 +186,6 @@ export default function ItineraryPage() {
       </Grid>
 
       <h2>Results</h2>
-      {/* Notice how similar the DataGrid component is to our LazyTable! What are the differences? */}
       <DataGrid
         rows={data}
         columns={columns}

@@ -10,16 +10,14 @@ import Typography from '@mui/material/Typography';
 import ButtonBase from '@mui/material/ButtonBase';
 
 import AirbnbCard from '../components/AirbnbCard';
-import { formatDuration } from '../helpers/formatter';
 const config = require('../config.json');
 const google=window.google
 
-export default function SongsPage() {
+export default function AirbnbPage() {
     const [pageSize, setPageSize] = useState(10);
     const [data, setData] = useState([]);
     const [selectedAirbnbName, setSelectedAirbnbName] = useState(null);
     const [city, setCity] = useState('Unselected');
-
     const [numPeople, setNumPeople] = useState(1);
     const [nights, setNights] = useState(1);
     const [price, setPrice] = useState([20, 1000]);
@@ -220,7 +218,7 @@ export default function SongsPage() {
                 autoHeight
             />
 
-            <h2>Don't know where to start? Here are our best Airbnbs ever.</h2>
+            <h2>Don't know where to start? Here are our best Airbnbs.</h2>
                 <Grid container spacing={2} direction="row" justifyContent="center" alignItems="stretch">
                     {data.slice(0, 12).map((item, index) => (
                         <Grid item key={index} xs={12} sm={3} md={2} container direction="column" alignItems="center">

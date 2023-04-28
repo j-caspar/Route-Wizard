@@ -10,7 +10,6 @@ export default function AirbnbCard({ airbnbName, handleClose }) {
   const [airbnbData, setAirbnbData] = useState({});
 
   useEffect(() => {
-    console.log(airbnbName);
     fetch(`http://${config.server_host}:${config.server_port}/airbnbs/${airbnbName}`)
     .then(res => res.json())
     .then(resJson => {
