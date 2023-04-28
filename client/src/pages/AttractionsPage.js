@@ -224,7 +224,7 @@ const filterBars = () => {
                     ))}
                 </Grid>
 
-                <h2>Want a bar crawl?</h2>
+                <h2>Want a bar crawl? Here are three spots within one km of each other!</h2>
                 <Grid container spacing={2} direction="row" justifyContent="center" alignItems="stretch">
                     {data4.map((item, index) => (
                         <Grid item key={index} xs={12} sm={3} md={2} container direction="column" alignItems="center">
