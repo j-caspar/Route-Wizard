@@ -73,25 +73,25 @@ const restaurants = async function (req, res) {
   });
 }
 
-// GET /random_rest
-const random_rest = async function (req, res) {
-  const city = req.query.city || 'Amsterdam';
+// // GET /random_rest
+// const random_rest = async function (req, res) {
+//   const city = req.query.city || 'Amsterdam';
 
-  connection.query(`
-	SELECT R.name, R.subcategory, S.image
-  FROM Restaurants R JOIN subcategory S ON R.subcategory = S.name
-  WHERE location LIKE '${city}'
-  ORDER BY RAND() LIMIT 10
-  `, (err, data) => {
-    if (err || data.length === 0) {
-      console.log(err);
-      res.json([]);
-    } else {
-      console.log(data);
-      res.json(data);
-    }
-  });
-}
+//   connection.query(`
+// 	SELECT R.name, R.subcategory, S.image
+//   FROM Restaurants R JOIN subcategory S ON R.subcategory = S.name
+//   WHERE location LIKE '${city}'
+//   ORDER BY RAND() LIMIT 10
+//   `, (err, data) => {
+//     if (err || data.length === 0) {
+//       console.log(err);
+//       res.json([]);
+//     } else {
+//       console.log(data);
+//       res.json(data);
+//     }
+//   });
+// }
 
 // GET /pizza
 const pizza = async function (req, res) {
@@ -305,25 +305,25 @@ const attractions = async function (req, res) {
   });
 }
 
-// GET /random_attr
-const random_attr = async function (req, res) {
-  const city = req.query.city || 'Amsterdam';
+// // GET /random_attr
+// const random_attr = async function (req, res) {
+//   const city = req.query.city || 'Amsterdam';
 
-  connection.query(`
-	SELECT A.name, A.subcategory, S.image
-  FROM attractions A JOIN subcategory S ON A.subcategory = S.name
-  WHERE location LIKE '%${city}%'
-  ORDER BY RAND() LIMIT 10
-  `, (err, data) => {
-    if (err || data.length === 0) {
-      console.log(err);
-      res.json({});
-    } else {
-      console.log(data);
-      res.json(data);
-    }
-  });
-}
+//   connection.query(`
+// 	SELECT A.name, A.subcategory, S.image
+//   FROM attractions A JOIN subcategory S ON A.subcategory = S.name
+//   WHERE location LIKE '%${city}%'
+//   ORDER BY RAND() LIMIT 10
+//   `, (err, data) => {
+//     if (err || data.length === 0) {
+//       console.log(err);
+//       res.json({});
+//     } else {
+//       console.log(data);
+//       res.json(data);
+//     }
+//   });
+// }
 
 // GET /museums
 const museums = async function (req, res) {
@@ -577,12 +577,10 @@ const friends = async function (req, res) {
 module.exports = {
   bestAirbnbs,
   restaurants,
-  random_rest,
   pizza,
   vegetarian,
   nearby_nightlife,
   attractions,
-  random_attr,
   museums,
   adult_only,
   itinerary,
