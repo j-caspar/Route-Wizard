@@ -17,6 +17,10 @@ export const openInNewTab = (url) => {
 
 export default function AlbumInfoPage() {
   const { bnb_name } = useParams();
+  var airbnbLat = '';
+  var airbnbLng = '';
+  var airbnbName = '';
+  var airbnbLocation = '';
 
   const [pageSize, setPageSize] = useState(10);
   const [airbnbData, setAirbnbData] = useState([{}]);
@@ -45,24 +49,34 @@ export default function AlbumInfoPage() {
       .then(res => res.json())
       .then(resJson => {
         setAirbnbData(resJson[0]);
-        fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_nightlife?lng=${resJson[0].lng}` +
-          `&lat=${resJson[0].lat}` + `&location=${resJson[0].location}`
+        airbnbLat = resJson[0].lat;
+        airbnbLng = resJson[0].lng;
+        airbnbName = resJson[0].name;
+        airbnbLocation = resJson[0].location;
+      });
+        fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_nightlife?lng=${airbnbLng}` +
+          `&lat=${airbnbLat}` + `&location=${airbnbLocation}`
         )
           .then(res => res.json())
           .then(resJson => {
+            console.log("this is the lng" + airbnbLng);
+            console.log("this is the lat" + airbnbLat);
+            console.log("this is the location" + airbnbLocation);
+            console.log(resJson);
             const attractions = resJson.map((attr) => ({ id: attr.name, ...attr }));
             setNearbyAttractions(attractions);
+            
           });
   
-        fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_rest?lng=${resJson[0].lng}` +
-          `&lat=${resJson[0].lat}`
+        fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_rest?lng=${airbnbLng}` +
+          `&lat=${airbnbLat}` + `&name=${airbnbName}`
         )
           .then(res => res.json())
           .then(resJson => {
             const restaurants = resJson.map((rest) => ({ id: rest.name, ...rest }));
             setNearbyRestaurants(restaurants);
           });
-      });
+      
   }, []);
   
   useEffect(() => {
@@ -169,7 +183,7 @@ export default function AlbumInfoPage() {
       }
 
       <br></br>
-      <h2>Nearby Attractions and Atractions</h2>
+      <h2>Nearby Restaurants</h2>
       <p>Click on each marker to learn more</p>
 
       <div id="map" style={{ height: '500px'}}></div>     
