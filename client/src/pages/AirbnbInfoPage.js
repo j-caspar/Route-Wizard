@@ -112,7 +112,6 @@ export default function AirbnbInfoPage() {
     },
     });
 
-    https://maps.google.com/mapfiles/ms/icons/restaurant.png
 
     nearbyRestaurants.map((restaurant) => {
       console.log("here is a restaurant lat");
