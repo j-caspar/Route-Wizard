@@ -21,7 +21,7 @@ export default function AirbnbInfoPage() {
   var airbnbLocation = '';
   const [pageSize, setPageSize] = useState(10);
   const [airbnbData, setAirbnbData] = useState([{}]);
-  //const [nearbyAttractions, setNearbyAttractions] = useState([{}]);
+  const [nearbyAttractions, setNearbyAttractions] = useState([{}]);
   const [nearbyRestaurants, setNearbyRestaurants] = useState([{}]);
 
   const [selectedAirbnbName, setSelectedAirbnbName] = useState(null);
@@ -46,15 +46,13 @@ export default function AirbnbInfoPage() {
       .then(res => res.json())
       .then(resJson => {
         setAirbnbData(resJson[0]);
-        airbnbLat = resJson[0].lat;
-        airbnbLng = resJson[0].lng;
-        airbnbName = resJson[0].name;
-        airbnbLocation = resJson[0].location;
-      });
-      /*
-        fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_nightlife?lng=${airbnbLng}` +
-          `&lat=${airbnbLat}` + `&location=${airbnbLocation}`
-        )
+        const airbnbLat = resJson[0].lat;
+        const airbnbLng = resJson[0].lng;
+        console.log(airbnbLat);
+        console.log(airbnbLng);
+        const airbnbName = resJson[0].name;
+        const airbnbLocation = resJson[0].location;
+        fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_nightlife?lng=${airbnbLng}&lat=${airbnbLat}&location=${airbnbLocation}`)
           .then(res => res.json())
           .then(resJson => {
             console.log("this is the lng" + airbnbLng);
@@ -63,21 +61,16 @@ export default function AirbnbInfoPage() {
             console.log(resJson);
             const attractions = resJson.map((attr) => ({ id: attr.name, ...attr }));
             setNearbyAttractions(attractions);
-            
           });
-
-          */
   
-        fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_rest?lng=${airbnbLng}` +
-          `&lat=${airbnbLat}` + `&name=${airbnbName}`
-        )
+        fetch(`http://${config.server_host}:${config.server_port}/airbnbs/nearby_rest?lng=${airbnbLng}&lat=${airbnbLat}&name=${airbnbName}`)
           .then(res => res.json())
           .then(resJson => {
             console.log(resJson);
             const restaurants = resJson.map((rest) => ({ id: rest.name, ...rest }));
             setNearbyRestaurants(restaurants);
           });
-      
+      });
   }, []);
   
   useEffect(() => {
@@ -116,6 +109,7 @@ export default function AirbnbInfoPage() {
     nearbyRestaurants.map((restaurant) => {
       console.log("here is a restaurant lat");
       console.log(restaurant.lng);
+      console.log(restaurant.lat);
       var markerTitle = restaurant.name;
       if (restaurant.subcategory) {
         markerTitle += ": " + restaurant.subcategory;
@@ -134,7 +128,6 @@ export default function AirbnbInfoPage() {
       });
     });
 
-    /*
     nearbyAttractions.map((attraction) => {
       var marker = new google.maps.Marker({
         position: new google.maps.LatLng(attraction.lat, attraction.lng),
@@ -149,7 +142,6 @@ export default function AirbnbInfoPage() {
         infowindow.open(map, this);
       });
     });
-    */
   
     map.setOptions({ minZoom: 12, maxZoom: 20 });
   }
