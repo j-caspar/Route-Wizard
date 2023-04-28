@@ -481,20 +481,22 @@ const friends = async function (req, res) {
 
 
   connection.query(`
-  
-  SELECT A.name as name, A.picture_url as picture_url, A.price as price, A.listing_url as listing_url, A.review_score as review_score, A.num_reviews as num_reviews,
-  B.name as bname, B.picture_url as bpicture_url, B.price as bprice, B.listing_url as blisting_url, B.review_score as breview_score, B.num_reviews as bnum_reviews,
-  SQRT((A.lat - B.lat) * (A.lat - B.lat) + (A.lng - B.lng) * (A.lng - B.lng)) * 111.139 AS Distance
-  FROM accommodations A JOIN accommodations B ON SQRT((A.lat - B.lat) * (A.lat - B.lat) + (A.lng - B.lng) * (A.lng - B.lng)) * 111.139 < 1
-  WHERE ${A_min_nights} >= A.min_nights AND ${B_min_nights} >= B.min_nights
-  AND ${A_min_price} <= A.price AND ${A_max_price} >= A.price AND ${B_min_price} <= B.price AND ${B_max_price} >= B.price
-  AND ${A_num_people} <= A.num_accommodates AND ${B_num_people} <= B.num_accommodates AND A.location = '${city}'  AND B.location = '${city}'
-  AND A.review_score IS NOT NULL AND B.review_score IS NOT NULL
-  AND A.name != B.name
-  GROUP BY A.name, B.name, A.picture_url, A.price, A.listing_url, A.review_score, A.num_reviews,
-  B.picture_url, B.price, B.listing_url, B.review_score, B.num_reviews
-  ORDER BY MAX(exp(Distance) * -4 * (LOG(((A.num_reviews + B.num_reviews) / 2) + 1) * 0.2) *
-  (POWER(((A.review_score + B.review_score) / 2), 3) / 150 )) LIMIT 10
+
+  WITH AccommodationsA AS (SELECT name, picture_url, price, listing_url, review_score, num_reviews, lat, lng
+    FROM accommodations
+    WHERE ${A_min_nights} >= min_nights AND ${A_min_price} <= price AND ${A_max_price} >= price AND ${A_num_people} <= num_accommodates AND location = '${city}'
+    AND review_score IS NOT NULL),
+    AccommodationsB AS (SELECT name, picture_url, price, listing_url, review_score, num_reviews, lat, lng
+    FROM accommodations
+    WHERE ${B_min_nights} >= min_nights AND ${B_min_price} <= price AND ${B_max_price} >= price AND ${B_num_people} <= num_accommodates AND location = '${city}'
+    AND review_score IS NOT NULL)
+    SELECT A.name, B.name as bname, A.picture_url, A.price, A.listing_url, A.review_score, A.num_reviews, B.picture_url as bpicture_url, B.price as bprice, B.listing_url as blisting_url, B.review_score as breview_score, B.num_reviews as bnum_reviews,
+    SQRT((A.lat - B.lat) * (A.lat - B.lat) + (A.lng - B.lng) * (A.lng - B.lng)) * 111.139 AS Distance
+    FROM AccommodationsA A JOIN AccommodationsB B ON SQRT((A.lat - B.lat) * (A.lat - B.lat) + (A.lng - B.lng) * (A.lng - B.lng)) * 111.139 < 1
+    WHERE A.name <> B.name
+    ORDER BY (exp(SQRT((A.lat - B.lat) * (A.lat - B.lat) + (A.lng - B.lng) * (A.lng - B.lng))) * -4 *
+    (LOG(((A.num_reviews + B.num_reviews) / 2) + 1) * 0.2) *
+    (POWER(((A.review_score + B.review_score) / 2), 3) / 150 )) LIMIT 10
   `, (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
@@ -505,6 +507,38 @@ const friends = async function (req, res) {
     }
   });
 }
+
+/*
+SELECT A.name as name, A.picture_url as picture_url, A.price as price, A.listing_url as listing_url, A.review_score as review_score, A.num_reviews as num_reviews,
+  B.name as bname, B.picture_url as bpicture_url, B.price as bprice, B.listing_url as blisting_url, B.review_score as breview_score, B.num_reviews as bnum_reviews,
+  SQRT((A.lat - B.lat) * (A.lat - B.lat) + (A.lng - B.lng) * (A.lng - B.lng)) * 111.139 AS Distance
+  FROM accommodations A JOIN accommodations B ON SQRT((A.lat - B.lat) * (A.lat - B.lat) + (A.lng - B.lng) * (A.lng - B.lng)) * 111.139 < 1
+  WHERE ${A_min_nights} >= A.min_nights AND ${B_min_nights} >= B.min_nights
+  AND ${A_min_price} <= A.price AND ${A_max_price} >= A.price AND ${B_min_price} <= B.price AND ${B_max_price} >= B.price
+  AND ${A_num_people} <= A.num_accommodates AND ${B_num_people} <= B.num_accommodates AND A.location = '${city}'  AND B.location = '${city}'
+  AND A.review_score IS NOT NULL AND B.review_score IS NOT NULL
+  AND A.name != B.name
+  ORDER BY (exp(Distance) * -4 * (LOG(((A.num_reviews + B.num_reviews) / 2) + 1) * 0.2) *
+  (POWER(((A.review_score + B.review_score) / 2), 3) / 150 )) LIMIT 10
+*/
+
+/*
+WITH AccommodationsA AS (SELECT name, picture_url, price, listing_url, review_score, num_reviews, lat, lng
+FROM accommodations
+WHERE ${A_min_nights} >= min_nights AND ${A_min_price} <= price AND ${A_max_price} >= price AND ${A_num_people} <= num_accommodates AND location = '${city}'
+AND review_score IS NOT NULL),
+AccommodationsB AS (SELECT name, picture_url, price, listing_url, review_score, num_reviews, lat, lng
+FROM accommodations
+WHERE ${B_min_nights} >= min_nights AND ${B_min_price} <= price AND ${B_max_price} >= price AND ${B_num_people} <= num_accommodates AND location = '${city}'
+AND review_score IS NOT NULL)
+SELECT A.name, B.name as bname, A.picture_url, A.price, A.listing_url, A.review_score, A.num_reviews, B.picture_url as bpicture_url, B.price as bprice, B.listing_url as blisting_url, B.review_score as breview_score, B.num_reviews as bnum_reviews,
+SQRT((A.lat - B.lat) * (A.lat - B.lat) + (A.lng - B.lng) * (A.lng - B.lng)) * 111.139 AS Distance
+FROM AccommodationsA A JOIN AccommodationsB B ON SQRT((A.lat - B.lat) * (A.lat - B.lat) + (A.lng - B.lng) * (A.lng - B.lng)) * 111.139 < 1
+WHERE A.name <> B.name
+ORDER BY (exp(SQRT((A.lat - B.lat) * (A.lat - B.lat) + (A.lng - B.lng) * (A.lng - B.lng))) * -4 *
+(LOG(((A.num_reviews + B.num_reviews) / 2) + 1) * 0.2) *
+(POWER(((A.review_score + B.review_score) / 2), 3) / 150 )) LIMIT 10
+*/
 
   module.exports = {
     bestAirbnbs,
