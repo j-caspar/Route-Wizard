@@ -107,9 +107,6 @@ export default function AirbnbInfoPage() {
 
 
     nearbyRestaurants.map((restaurant) => {
-      console.log("here is a restaurant lat");
-      console.log(restaurant.lng);
-      console.log(restaurant.lat);
       var markerTitle = restaurant.name;
       if (restaurant.subcategory) {
         markerTitle += ": " + restaurant.subcategory;
