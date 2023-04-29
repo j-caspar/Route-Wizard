@@ -178,7 +178,7 @@ export default function AirbnbInfoPage() {
       }
 
       <br></br>
-      <h2>Nearby Restaurants</h2>
+      <h2>Nearby Restaurants and Attractions</h2>
       <p>Click on each marker to learn more</p>
 
       <div id="map" style={{ height: '500px'}}></div>     
