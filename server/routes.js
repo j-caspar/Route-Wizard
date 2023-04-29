@@ -73,25 +73,6 @@ const restaurants = async function (req, res) {
   });
 }
 
-// // GET /random_rest
-// const random_rest = async function (req, res) {
-//   const city = req.query.city || 'Amsterdam';
-
-//   connection.query(`
-// 	SELECT R.name, R.subcategory, S.image
-//   FROM Restaurants R JOIN subcategory S ON R.subcategory = S.name
-//   WHERE location LIKE '${city}'
-//   ORDER BY RAND() LIMIT 10
-//   `, (err, data) => {
-//     if (err || data.length === 0) {
-//       console.log(err);
-//       res.json([]);
-//     } else {
-//       console.log(data);
-//       res.json(data);
-//     }
-//   });
-// }
 
 // GET /pizza
 const pizza = async function (req, res) {
@@ -156,63 +137,6 @@ const nearby_nightlife = async function (req, res) {
   });
 }
 
-/*
-
-// GET /nearby_rest
-// const nearby_rest = async function (req, res) {
-//   const lng = req.query.lng ;
-//   const lat = req.query.lat ;
-//   const location = req.query.location ;
-
-//   connection.query(`
-//   SELECT A.name, A.subcategory, S.image, A.lat, A.lng
-//   FROM restaurants A JOIN subcategory S ON A.subcategory = S.name
-//   WHERE location = '${location}'
-//   GROUP BY A.name, A.subcategory, S.image
-//   ORDER BY MIN(SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)))
-//   LIMIT 10
-//   `, (err, data) => {
-//     if (err || data.length === 0) {
-//       console.log(err);
-//       res.json({});
-//     } else {
-//       console.log(data);
-//       res.json(data);
-//     }
-//   });
-
-/*
- const nearby_rest = async function (req, res) {
-   const lng = req.query.lng ;
-   const lat = req.query.lat ;
-
-   connection.query(`
-   CREATE TABLE tempDist(name varchar(255), dist DECIMAL(28, 20));
-    INSERT INTO tempDist(name, dist) (
-    SELECT name, (SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)))
-    FROM location
-    WHERE type = 'Restaurant');
-    CREATE INDEX IX_closest ON tempDist(dist);
-    SELECT DISTINCT(R.name), tempDist.dist, R.subcategory
-      FROM restaurants R
-      JOIN tempDist ON R.name = tempDist.name
-      ORDER BY dist
-      LIMIT 10;
-    '
-   `, (err, data) => {
-     if (err || data.length === 0) {
-       console.log(err);
-       console.log("Data is empty");
-       res.json({});
-     } else {
-      console.log("Data is NOT EMPTY");
-      console.log(data);
-       res.json(data);
-   }});
- }
-
- */
-
 const nearby_rest = async function (req, res) {
   const lng = req.query.lng;
   const lat = req.query.lat;
@@ -231,55 +155,6 @@ const nearby_rest = async function (req, res) {
     }
   });
 }
-
-/* 
-const nearby_rest = (req, res) => {
-const lng = req.query.lng ;
-const lat = req.query.lat ;
- 
-// Execute the first query
-const createTempTableQuery = `
-CREATE TABLE tempDist(name varchar(255), dist DECIMAL(28, 20));
-INSERT INTO tempDist(name, dist) (
-SELECT name, (SQRT((${lat} - lat) * (${lat} - lat) + (${lng} - lng) * (${lng} - lng)))
-FROM location
-WHERE type = 'Restaurant');
-`;
-connection.query(createTempTableQuery, (err, results) => {
-if (err) {
- // Handle error and send response
- console.error(err);
-} else {
- // Execute the second query
- const createIndexQuery = 'CREATE INDEX IX_closest ON tempDist(dist);';
- connection.query(createIndexQuery, (err, results) => {
-   if (err) {
-     // Handle error and send response
-     console.error(err);
-   } else {
-     // Execute the third query
-     const fetchQuery = `
- SELECT DISTINCT(R.name), tempDist.dist, R.subcategory
- FROM restaurants R
- JOIN tempDist ON R.name = tempDist.name
- ORDER BY dist
- LIMIT 10;
- `;
-     connection.query(fetchQuery, (err, results) => {
-       if (err) {
-         // Handle error and send response
-         console.error(err);
-       } else {
-         // Send the results to the client
-         console.log(results);
-         res.json(results);
-       }
-     });
-   }
- });
-}
-});
-} */
 
 
 // GET /attractions
@@ -304,26 +179,6 @@ const attractions = async function (req, res) {
     }
   });
 }
-
-// // GET /random_attr
-// const random_attr = async function (req, res) {
-//   const city = req.query.city || 'Amsterdam';
-
-//   connection.query(`
-// 	SELECT A.name, A.subcategory, S.image
-//   FROM attractions A JOIN subcategory S ON A.subcategory = S.name
-//   WHERE location LIKE '%${city}%'
-//   ORDER BY RAND() LIMIT 10
-//   `, (err, data) => {
-//     if (err || data.length === 0) {
-//       console.log(err);
-//       res.json({});
-//     } else {
-//       console.log(data);
-//       res.json(data);
-//     }
-//   });
-// }
 
 // GET /museums
 const museums = async function (req, res) {

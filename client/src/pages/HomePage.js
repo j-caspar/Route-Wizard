@@ -11,7 +11,7 @@ export default function HomePage() {
   const flexFormat = { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-evenly' };
   return (
 <Container style={{ backgroundImage: `url(${world})`, backgroundSize: "cover"}}>      
-      <h2 className="centered-h2"> TIME TO TRAVEL...&nbsp; 
+      <h2 className="centered-h2"> WELCOME TO ROUTE WIZARD! TIME TO TRAVEL...&nbsp; 
       </h2>
       <h4 className="centered-h2">What are you searching for?&nbsp;
       </h4>
