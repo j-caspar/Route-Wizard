@@ -7,7 +7,7 @@ Project writeup: https://docs.google.com/document/d/1H_8c2lso7QxjHyaLE9-ow2t_Dit
 
 **Note: no longer AWS connection and Google Maps API Key. Please look at video above to see website demonstration**
 
-In order to run the app locally:
+Former instructions to run the app locally:
 1) Ensure that you create an index.html file under the following path "client/public/index.html". Copy and paste the following code into that file:
 
 <!DOCTYPE html>
