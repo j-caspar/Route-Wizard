@@ -1,6 +1,10 @@
 # CIS-550-Final-Project
 We are designing an application that will personalize an itinerary of accommodations, restaurants, and attractions in one or more out of 8 major European cities based on user input. 
 
+Project writeup: https://docs.google.com/document/d/1H_8c2lso7QxjHyaLE9-ow2t_DitUdpKa7nBoHwOnqWQ/edit?usp=sharing
+
+**Note: no longer AWS connection and Google Maps API Key. Please contact for more information about website**
+
 In order to run the app locally:
 1) Ensure that you create an index.html file under the following path "client/public/index.html". Copy and paste the following code into that file:
 
